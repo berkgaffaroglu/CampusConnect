@@ -1,12 +1,17 @@
 from .models import Event
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .forms import CreateEventForm
+from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 
 EVENT_PER_PAGE = 10
 PAGE_PER_PAGE = 5
+
+
+
 @login_required
 def events(request):
     events = Event.objects.all()
@@ -55,3 +60,15 @@ def create_event(request):
     else:
         form = CreateEventForm()
     return render(request, 'events/create_event.html', {'form': form})
+
+@login_required
+def delete_event(request, pk):
+    
+    event = get_object_or_404(Event, pk=pk)
+    if request.user.pk != event.created_by.pk:
+        raise PermissionDenied("You can't edit this profile!")
+
+    if request.method == 'POST':
+        event.delete()
+    messages.add_message(request, messages.constants.ERROR, "Event deleted!")
+    return redirect('events')
