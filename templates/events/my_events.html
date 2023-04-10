@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %} Events {% endblock title%}
+
+{% block content %}
+<h1>My Events</h1><hr/>
+{% if events %}
+
+
+  {% for event in events %}
+  
+    <div class="card mb-3">
+        <div class="card-body">
+          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>Activity: {{event.title}}</b></h5></a>
+          <hr/>
+          <p class="card-text"><b>Description:</b> {{event.description|truncatechars:200|add:'...'}}</p>
+          <hr/>
+          <p class="card-text"><b>Location:</b> {{event.location}}</p>
+          <hr/>
+          <p class="card-text"><b>Time:</b> {{event.time|date:"j/m/Y l H:i" }}</p>
+          <hr/>
+          <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
+          <hr/>
+          <a href="{% url 'event-detail' pk=event.pk %}" class="btn btn-primary">Go To The Details</a>
+        </div>
+      </div>
+  {% endfor %}
+
+
+
+<nav>
+  <ul class="pagination">
+
+    {% if events.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a></li>
+    {% else %}
+      <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+    {% endif %}
+
+
+
+    {% for num in events.paginator.page_range %}
+      {% if num == events.number %}
+        <li class="page-item active">
+          <a class="page-link" href="?page={{ num }}">{{ num }} <span class="sr-only">(current)</span></a>
+        </li>
+        {% elif num > events.number|add:-5 and num < events.number|add:5 %}
+
+
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+
+
+    {% if events.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ events.next_page_number }}">Next</a></li>
+    {% else %}
+    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+    {% endif %}
+
+      
+    </ul>
+  </nav>
+{% else %}
+There is nothing yet.
+{% endif %}
+{% endblock content %}
