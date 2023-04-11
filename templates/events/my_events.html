@@ -10,7 +10,7 @@
 
     <div class="card mb-3">
         <div class="card-body">
-          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title|title}} {% if event.is_past %}<span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> Old Event</span>{% endif %}</b></h5></a>
+          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title|title}} {% if event.old_post %}<span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> Old Event</span>{% endif %}</b></h5></a>
           <hr/>
           <p class="card-text"><b>Description:</b> {{event.description|truncatechars:200|add:'...'}}</p>
           <hr/>
@@ -27,8 +27,8 @@
 
 
 
-<nav>
-  <ul class="pagination">
+<nav style="text-align:center;">
+  <ul class="pagination justify-content-center">
 
     {% if events.has_previous %}
       <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a></li>
@@ -63,6 +63,7 @@
       
     </ul>
   </nav>
+
 {% else %}
 There is nothing yet.
 {% endif %}

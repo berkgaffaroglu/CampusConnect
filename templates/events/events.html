@@ -31,10 +31,10 @@
 
           {% if event in events_attending %}
             {% if not event.is_past %}
-            <span class="badge badge-success">You are attending this event.</span>
+            <span class="badge badge-success"><i class="fa-solid fa-check"></i> You are attending this event.</span>
             
               {% else %}
-              <span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> Old Event</span>
+              <span class="badge badge-secondary"> <i class="fa-solid fa-skull"></i> Old Event</span>
             {% endif%}
 
           {% endif %}
@@ -61,7 +61,7 @@
 
 
 <nav class="text-center">
-  <ul class="pagination ">
+  <ul class="pagination justify-content-center">
 
     {% if events.has_previous %}
     <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a></li>

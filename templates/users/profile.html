@@ -3,33 +3,27 @@
 {% block content %}
 
 
-
+<h1>Profile of: {{current_profile.username}} {% if can_change %}
+    <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary btn-lg">Edit Profile</a>
+{% endif %}</h1>
+<hr/>
 <div class="card">
 
     <div class="card-body p-5" style="min-height: 700px;">
 
         <div class="col-md-5">
-            <img class="rounded-circle account-img mb-3" width="100px" height="100px"
-                src="{{ current_profile.profile.avatar.url }} " />
-        </div>
-        <div class="col-md-5 mb-4">
-            {% if can_change %}
-                <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary">Edit Profile</a>
-            {% endif %}
-        </div>
-        <div class="col-md-5 mb-4">
-            <label>
-                <h4>Username:</h4>
-            </label>
-            <p>{{current_profile.username}}</p>
+            <img class="rounded-circle account-img mb-3" data-toggle="tooltip" data-placement="right" width="100px" title='Profile picture of "{{current_profile.username}}"' height="100px"
+                src="{{ current_profile.profile.avatar.url }} "/>
         </div>
 
+        <hr/>
         <div class="col-md-5 mb-4">
             <label>
                 <h4>Full Name:</h4>
             </label>
             <p>{{ current_profile.first_name }} {{current_profile.last_name}}</p>
         </div>
+        <hr/>
 
         <div class="col-md-5 mb-4">
             <label>
@@ -38,7 +32,7 @@
             <p>{{ current_profile.profile.bio }}</p>
         </div>
 
-
+        <hr/>
         {% if social_clubs|length > 0 %}
         <div class="col-md-5 mb-4">
             <label>
@@ -50,6 +44,7 @@
             {% endfor %}
 
         </div>
+        <hr/>
         {% endif %}
 
         {% if created_events|length > 0 %}
@@ -65,6 +60,7 @@
                 {% endfor %}
             </ul>
         </div>
+        <hr/>
         {% endif %}
 
     </div>

@@ -42,8 +42,10 @@ def event_detail(request, pk):
     if request.method == 'POST':
         if 'attend' in request.POST:
             event.users.add(request.user)
+            messages.add_message(request,messages.constants.SUCCESS,f'You have successfully attended to the event')
         elif 'unattend' in request.POST:
             event.users.remove(request.user)
+            messages.add_message(request, messages.constants.ERROR, f'You have successfully unattended to the event')
         return redirect("event-detail", pk=pk)
 
     return render(request, 'events/event_detail.html', {'event': event, 'is_attending': is_attending, "shortened_attendant_list":all_attendants_list})
