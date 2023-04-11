@@ -4,7 +4,8 @@
 {% block content %}
    
         <h1><b>{{event.title}}</b></h1> <div class="mt-3">
-            {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
+            {% if not event.is_past %}
                 {% if is_attending %}
                     <form method="POST">
                         {% csrf_token %}
@@ -21,7 +22,12 @@
                           </button>
                     </form>
                 {% endif %}
+            {% else %}
+                  <button type="submit" name="attend" class="btn btn-secondary" disabled>
+                    <i class="fa-solid fa-check"></i> Event Time Has Passed
+                  </button>
             {% endif %}
+          {% endif %}
         </div>
                     ⠀
                    

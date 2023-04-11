@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Events {% endblock title%}
+{% block title %} My Events {% endblock title%}
 
 {% block content %}
 <h1>My Events ({{events|length}})</h1><hr/>
@@ -10,7 +10,7 @@
 
     <div class="card mb-3">
         <div class="card-body">
-          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title|title}}</b></h5></a>
+          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title|title}} {% if event.is_past %}<span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> Old Event</span>{% endif %}</b></h5></a>
           <hr/>
           <p class="card-text"><b>Description:</b> {{event.description|truncatechars:200|add:'...'}}</p>
           <hr/>

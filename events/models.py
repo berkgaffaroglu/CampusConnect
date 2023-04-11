@@ -16,5 +16,10 @@ class Event(models.Model):
     time = models.DateTimeField(validators=[validate_datetime])
     users = models.ManyToManyField(User, related_name='events_attending')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', blank=True, default="", null=True)
+    is_past = models.BooleanField(blank=True, default=False)
     def __str__(self):
         return self.title
+    def is_past(self):
+        if self.time < timezone.now():
+            return True
+        return False

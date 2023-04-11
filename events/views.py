@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from .forms import CreateEventForm
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.utils import timezone
 
 
 EVENT_PER_PAGE = 10
@@ -12,9 +13,11 @@ PAGE_PER_PAGE = 5
 
 
 
+
+
 @login_required
 def events(request):
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('-time')
     events_attending = Event.objects.filter(users=request.user)
     paginator = Paginator(events, EVENT_PER_PAGE)
     page = request.GET.get('page')
@@ -25,7 +28,7 @@ def events(request):
 @login_required
 def my_events(request):
     # Get the current user's events they are attending
-    events = Event.objects.filter(users=request.user)
+    events = Event.objects.filter(users=request.user).order_by('-time')
     events_attending = Event.objects.filter(users=request.user)
     paginator = Paginator(events, EVENT_PER_PAGE)
     page = request.GET.get('page')
@@ -34,7 +37,7 @@ def my_events(request):
 
 def event_detail(request, pk):
     event = Event.objects.get(pk=pk)
-    all_attendants_list = event.users.all()[:5]
+    all_attendants_list = event.users.all()
     is_attending = event.users.filter(id=request.user.id).exists()
     if request.method == 'POST':
         if 'attend' in request.POST:
