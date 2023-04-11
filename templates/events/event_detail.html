@@ -16,7 +16,7 @@
                 {% else %}
                     <form method="POST">
                         {% csrf_token %}
-                        <button type="submit" name="attend" class="btn btn-primary">
+                        <button type="submit" name="attend" class="btn btn-success">
                             <i class="fa-solid fa-check"></i> Attend
                           </button>
                     </form>
@@ -51,7 +51,7 @@
                     {% for user_ in shortened_attendant_list %}
                     
                         <a href="{% url 'users-profile' pk=user_.pk %}">
-                            <img class="rounded-circle account-img mt-3" {% if event.created_by == user_ %} title="{{event.created_by}} created this event!" data-toggle="tooltip" data-placement="right" style="border: 4px solid green;" {% endif %} width="50px" height="50px" src="{{ user_.profile.avatar.url }} " style="cursor: pointer;"/>
+                            <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right" title="{{user_.username}} is attending this event!" width="50px" height="50px" src="{{ user_.profile.avatar.url }} " style="cursor: pointer;"/>
                         </a>
                     {% endfor %}
                 </p>
@@ -61,10 +61,11 @@
                
                 {% if event.created_by.pk == request.user.pk %}
 
-                <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
-                    Delete This Event
-                  </button>
-                  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal" data-target="#eventDeleteModalCenter">
+                    <i class="fa-sharp fa-solid fa-trash"></i> Delete This Event
+                </a>
+                  
+                  <div class="modal fade" id="eventDeleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -77,11 +78,12 @@
                           Do you want to delete this event?
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          
                           <form method="POST" action="{% url 'delete-event' pk=event.pk %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn btn-danger"><i class="fa-sharp fa-solid fa-trash"></i> Delete</button>
                         </form>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i> Close</button>
                           
                         </div>
                       </div>

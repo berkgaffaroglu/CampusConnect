@@ -37,8 +37,8 @@
 
 
 
-<nav>
-  <ul class="pagination">
+<nav class="text-center">
+  <ul class="pagination ">
 
     {% if events.has_previous %}
       <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a></li>
@@ -73,6 +73,7 @@
       
     </ul>
   </nav>
+
 {% else %}
 There is nothing yet.
 {% endif %}

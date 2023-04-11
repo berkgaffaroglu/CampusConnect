@@ -66,7 +66,7 @@ def delete_event(request, pk):
     
     event = get_object_or_404(Event, pk=pk)
     if request.user.pk != event.created_by.pk:
-        raise PermissionDenied("You can't edit this profile!")
+        raise PermissionDenied("You can't delete this event!")
 
     if request.method == 'POST':
         event.delete()

@@ -90,7 +90,11 @@ def profile(request, pk):
             else:
                 can_change = False
         current_profile = User.objects.get(pk=pk)
-        return render(request, 'users/profile.html', {'can_change': can_change, 'current_profile':current_profile})
+        created_events = current_profile.created_events.all()
+        # social_clubs = current_profile.social_clubs.all()
+        # return render(request, 'users/profile.html', {'can_change': can_change, 'current_profile':current_profile, 'created_events':created_events, 'social_clubs':social_clubs})
+
+        return render(request, 'users/profile.html', {'can_change': can_change, 'current_profile':current_profile, 'created_events':created_events})
 
 @login_required
 def edit_profile(request,pk):
