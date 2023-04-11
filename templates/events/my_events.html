@@ -2,15 +2,15 @@
 {% block title %} Events {% endblock title%}
 
 {% block content %}
-<h1>My Events</h1><hr/>
+<h1>My Events ({{events|length}})</h1><hr/>
 {% if events %}
 
 
   {% for event in events %}
-  
+
     <div class="card mb-3">
         <div class="card-body">
-          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>Activity: {{event.title}}</b></h5></a>
+          <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title|title}}</b></h5></a>
           <hr/>
           <p class="card-text"><b>Description:</b> {{event.description|truncatechars:200|add:'...'}}</p>
           <hr/>

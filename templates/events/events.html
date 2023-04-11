@@ -2,10 +2,10 @@
 {% block title %} Events {% endblock title%}
 
 {% block content %}
-<h1 style="display: inline-block;">Event Feed</h1><div class="mb-3 float-right" style="display: inline-block;">
+<h1 style="display: inline-block;">Event Feed</h1><div class="float-right" style="display: inline-block;">
 
 
-<a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus">  </i> Create Events</a>
+<a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus">  </i> Create Event</a>
 
 </div>
 
@@ -18,7 +18,7 @@
   
   {% for event in events %}
   
-    <div class="card mb-5">
+    <div class="card mb-3">
         <div class="card-body">
           <a href="{% url 'event-detail' pk=event.pk %}"><h5 class="card-title"><b>{{event.title | title }} {% if event in events_attending %} <small class="text-danger"> <b>(You are attending this event.)</b></small>  {% endif %}</b></h5></a>
           <hr/>

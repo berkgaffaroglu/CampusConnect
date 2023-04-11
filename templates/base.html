@@ -40,10 +40,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ml-auto">
-                  <li class="nav-item">
-                    <a href="/events" class="nav-link"><b>Events</b></a>
-                    </li>
+                  
                   {% if user.is_authenticated %}
+                  
+                    <a href="/events" class="nav-item nav-link"><b>Events</b></a>
                     <a href="{% url 'my-events' %}" class="nav-item nav-link"><b>My Events</b></a>
                     <a href="{% url 'users-profile' pk=request.user.pk %}" class="nav-item nav-link"><b>Profile</b></a>
                     <a data-toggle="modal" data-target="#logoutModalCenter" style="cursor: pointer;" class="nav-item nav-link"><b>Logout</b></a>
@@ -69,7 +69,7 @@
                       </div>
                     </div>
                   {% else %}
-                    <a href="{% url 'login' %}" class="nav-item nav-link">Sign in</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link"><b>Sign in</b></a>
                   {% endif %}
 
                 </div>

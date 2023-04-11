@@ -1,61 +1,74 @@
 {% extends "base.html" %}
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
-    
-    
-      
-        <div class="card">
-            
-            <div class="card-body p-5" style="min-height: 700px; border:10px solid #0275d8">
-                
-    <div class="col-md-5 p-4">
-        <img class="rounded-circle account-img" width="100px" height="100px" src="{{ current_profile.profile.avatar.url }} " />
-    </div>
 
-    <div class="col-md-5 mb-3">
-        <h3><b>{{current_profile.username}}</b></h3>
-    </div>
-    <hr class="sr"/>
-    <div class="col-md-5 mb-3">
-        <label><b>Full Name:</b></label> {{ current_profile.first_name }} {{current_profile.last_name}}
-    </div>
-    <hr class="sr"/>
-    <div class="col-md-5 mb-3">
-        <label><b>Bio:</b></label> {{ current_profile.profile.bio }}
-    </div>
-    <hr class="sr"/>
 
-    {% if social_clubs|length > 0 %}
-        <div class="col-md-5 mb-3">
-            <label><b>Social Clubs:</b></label> 
-            
-            {% for event in created_events %}
-                <a href="{% url 'event-detail' pk=event.pk %}"><b>{{event.title | title }}</b></a>
-            {% endfor %}
-            
+
+<div class="card">
+
+    <div class="card-body p-5" style="min-height: 700px;">
+
+        <div class="col-md-5">
+            <img class="rounded-circle account-img mb-3" width="100px" height="100px"
+                src="{{ current_profile.profile.avatar.url }} " />
         </div>
-    {% endif %}
+        <div class="col-md-5 mb-4">
+            {% if can_change %}
+                <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary">Edit Profile</a>
+            {% endif %}
+        </div>
+        <div class="col-md-5 mb-4">
+            <label>
+                <h4>Username:</h4>
+            </label>
+            <p>{{current_profile.username}}</p>
+        </div>
 
-    {% if created_events|length > 0 %}
-        <div class="col-md-5 mb-3">
-            
-            <label><b>Created Events:</b></label> 
-            <ul class="list-group mb-3">
+        <div class="col-md-5 mb-4">
+            <label>
+                <h4>Full Name:</h4>
+            </label>
+            <p>{{ current_profile.first_name }} {{current_profile.last_name}}</p>
+        </div>
+
+        <div class="col-md-5 mb-4">
+            <label>
+                <h4>Bio:</h4>
+            </label> 
+            <p>{{ current_profile.profile.bio }}</p>
+        </div>
+
+
+        {% if social_clubs|length > 0 %}
+        <div class="col-md-5 mb-4">
+            <label>
+                <h4>Social Clubs:</h4>
+            </label>
+
             {% for event in created_events %}
-                <li class="list-group-item"><a href="{% url 'event-detail' pk=event.pk %}"><b>{{event.title | title }}</b></a></li>
+            <a href="{% url 'event-detail' pk=event.pk %}">{{event.title | title }}</a>
             {% endfor %}
+
+        </div>
+        {% endif %}
+
+        {% if created_events|length > 0 %}
+        <div class="col-md-5 mb-4">
+
+            <label>
+                <h4>Created Events:</h4>
+            </label>
+            <ul class="list-group mb-4">
+                {% for event in created_events %}
+                <li class="list-group-item"><a href="{% url 'event-detail' pk=event.pk %}">{{event.title | title }}</a>
+                </li>
+                {% endfor %}
             </ul>
         </div>
-    {% endif %}
-
-    <div class="col-md-5">
-        {% if can_change %}
-            <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary">Edit Profile</a>
         {% endif %}
+
     </div>
-            </div>
-        
-        </div>
-   
+</div>
+
 
 {% endblock content %}
