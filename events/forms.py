@@ -2,11 +2,6 @@ from django import forms
 from .models import Event
 from django.utils import timezone
 
-
-
-    
-
-
 class CreateEventForm(forms.ModelForm):
     class Meta:
         model = Event

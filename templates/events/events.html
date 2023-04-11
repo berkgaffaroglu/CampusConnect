@@ -29,15 +29,21 @@
 
           {{event.title | title }}
 
-          {% if event in events_attending %}
-            {% if not event.is_past %}
-            <span class="badge badge-success"><i class="fa-solid fa-check"></i> You are attending this event.</span>
-            
-              {% else %}
-              <span class="badge badge-secondary"> <i class="fa-solid fa-skull"></i> Old Event</span>
-            {% endif%}
+          {% if event.is_past %}
+
+          <span class="badge badge-success"><i class="fa-solid fa-check"></i> You are attending this event.</span>
+
+          {% elif event in events_attending %}
+          <span class="badge badge-success"><i class="fa-solid fa-check"></i> You are attending this event.</span>
+          
+
+          {% elif event.users.all|length > event.maximum_people %}
+          <span class="badge badge-danger"> <i class="fa-solid fa-gauge-simple-max"></i></i> Event Is Full</span>
+
 
           {% endif %}
+          
+ 
         </b></h5>
     </a>
 
