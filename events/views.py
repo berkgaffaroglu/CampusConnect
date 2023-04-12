@@ -1,11 +1,13 @@
 from .models import Event
+from django.db.models import Q
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 from django.core.paginator import Paginator
 from .forms import CreateEventForm
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
-from django.utils import timezone
+from .forms import CreateEventForm
 
 EVENT_PER_PAGE = 10
 PAGE_PER_PAGE = 5
@@ -20,15 +22,20 @@ def events(request):
 
     return render(request, 'events/events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending})
 
-# @login_required
-# def my_events(request):
-#     # Get the current user's events they are attending
-#     events = Event.objects.filter(users=request.user).order_by('-time')
-#     events_attending = Event.objects.filter(users=request.user)
-#     paginator = Paginator(events, EVENT_PER_PAGE)
-#     page = request.GET.get('page')
-#     events = paginator.get_page(page)
-#     return render(request, 'events/my_events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending})
+@login_required
+def search_events(request):
+    query = request.GET.get('q')
+    print(query)
+    if query:
+        events = Event.objects.filter(Q(title__icontains=query) | Q(created_by__username__icontains=query)).order_by('-time')
+    else:
+        events = Event.objects.none()
+    events_attending = Event.objects.filter(users=request.user)
+    paginator = Paginator(events, EVENT_PER_PAGE)
+    page = request.GET.get('page')
+    events = paginator.get_page(page)
+
+    return render(request, 'events/search_event.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending, "query":query})
 
 def event_detail(request, pk):
     event = Event.objects.get(pk=pk)
@@ -63,13 +70,23 @@ def create_event(request):
 
 @login_required
 def edit_event(request, pk):
-    
-    return render(request, 'events/edit_event.html')
+    event = Event.objects.get(pk=pk)
+    if request.user.pk == event.created_by.pk:
+        if request.method == 'POST':
+            
+            form = CreateEventForm(request.POST,instance=event)
+            if form.is_valid():
+                form.save()
+                return redirect('event-detail', pk=event.pk)
+
+        else:
+            form = CreateEventForm(instance=event)
+
+        return render(request, 'events/edit_event.html', {'form':form})
 
 
 @login_required
 def delete_event(request, pk):
-    
     event = get_object_or_404(Event, pk=pk)
     if request.user.pk != event.created_by.pk:
         raise PermissionDenied("You can't delete this event!")
@@ -78,3 +95,4 @@ def delete_event(request, pk):
         event.delete()
     messages.add_message(request, messages.constants.ERROR, "Event deleted!")
     return redirect('events')
+

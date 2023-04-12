@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 
 from django.core.paginator import Paginator
 from events.models import Event
-from events.views import PAGE_PER_PAGE, EVENT_PER_PAGE
+
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from .models import User
@@ -84,7 +84,8 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
     success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('users-home')
-
+EVENT_PER_PAGE = 3
+PAGE_PER_PAGE = 5
 @login_required
 def profile(request, pk):
     if request.method == 'GET':

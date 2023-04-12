@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.8.2/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; css.integrity = "sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"; document.getElementsByTagName('head')[0].appendChild(css); })(); </script
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,8 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"
     integrity="sha512-zZSw+r0iHldyzE4QlWW0avq3ICd5v5O5HxS5ABjA0pX9YFz8pW1kwIHtEmyCtE2A91f8i/mIaGKkMtdO/M2BvQ=="
     crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-    integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+  
 
   <title>{% block title %} {% endblock %} </title>
   <style>
@@ -38,23 +38,32 @@
 
     </a>
     
-    <a href="/events" class="nav-link nav-item text-light"><b>Events</b></a>
+    <a href="/events" class="nav-link nav-item text-light d-none d-md-flex mt-0">
+      <b> <i class="fa-sharp fa-solid fa-bolt "> </i> Events</b>
+    </a>
 
 
 
 
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-      <span class="navbar-toggler-icon"></span>
+      <i class="fa-solid fa-bars " style="font-size: 30px;"></i>
     </button>
     
-    <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="collapse navbar-collapse " id="navbarCollapse">
       
-      <div class="navbar-nav ml-auto" style="margin-right: 10%;">
+      <div class="navbar-nav ml-auto" style="margin-right: 6%;">
         
 
         {% if user.is_authenticated %}
+        <!-- This part dissapears when mobile -->
+        <form class="form-inline d-none d-md-flex mt-0" method="GET" action="{% url 'search-events' %}">
+          <input name="q" class="form-control mr-2 " type="search" placeholder="Search Events" aria-label="Search">
+          <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form> 
+
+
         
-        <div class="dropdown d-none d-md-block" style="margin-right: 10%;">
+        <div class="dropdown d-none d-md-block" >
           <a href="#" id="imageDropdown" data-toggle="dropdown">
             <img class="rounded-circle account-img " style="border:4px solid white;" width="70px"
                  height="70px"
@@ -62,17 +71,25 @@
           </a>
           <ul class="dropdown-menu p-0" role="menu" aria-labelledby="imageDropdown">
            
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b>Profile</b></a>
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
 
-            <a class="dropdown-item btn btn-lg btn-blockbtn-outline-primary" data-toggle="modal" data-target="#logoutModalCenter"><b>Logout</b></a>
+            <a class="dropdown-item btn btn-lg btn-block btn-outline-primary" data-toggle="modal" data-target="#logoutModalCenter"><b><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</b></a>
 
+            
           </ul>
 
         </div>
 
+        
+        <!-- This part shows on mobile -->
         <ul class="d-md-none">
-          <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b>Profile</b></a>
-          <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><b>Logout</b></a>
+          <a href="/events" class="nav-link nav-item text-light"><i class="fa-sharp fa-solid fa-bolt "></i><b> Events</b></a>
+          <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
+          <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
+          <form class="form-inline">
+            <input class="form-control mr-2" type="search" placeholder="Search Events" aria-label="Search">
+            <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
         </ul>
 
         

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} Search Events {% endblock title%}
+
+{% block content %}
+<h1 style="display: inline-block;">Event Feed</h1>
+<div class="float-right" style="display: inline-block;">
+  <a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i> Create Event</a>
+</div>
+<hr />
+{% include 'events/events_REUSE.html' %}
+{% endblock %}
