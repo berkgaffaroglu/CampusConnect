@@ -7,6 +7,10 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
+from django.core.paginator import Paginator
+from events.models import Event
+from events.views import PAGE_PER_PAGE, EVENT_PER_PAGE
+
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from .models import User
 
@@ -81,7 +85,7 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('users-home')
 
-
+@login_required
 def profile(request, pk):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -91,10 +95,22 @@ def profile(request, pk):
                 can_change = False
         current_profile = User.objects.get(pk=pk)
         created_events = current_profile.created_events.all()
-        # social_clubs = current_profile.social_clubs.all()
-        # return render(request, 'users/profile.html', {'can_change': can_change, 'current_profile':current_profile, 'created_events':created_events, 'social_clubs':social_clubs})
+        events = Event.objects.filter(users=current_profile).order_by('-time')
+        events_attending = Event.objects.filter(users=request.user)
+        paginator = Paginator(events, EVENT_PER_PAGE)
+        page = request.GET.get('page')
+        events = paginator.get_page(page)
+        context = {'events': events, 
+                   'PAGE_PER_PAGE':PAGE_PER_PAGE,
+                    'events_attending': events_attending,
+                    'can_change': can_change, 
+                    'current_profile':current_profile, 
+                    'created_events':created_events
+                    }
 
-        return render(request, 'users/profile.html', {'can_change': can_change, 'current_profile':current_profile, 'created_events':created_events})
+
+        # social_clubs = current_profile.social_clubs.all()
+        return render(request, 'users/profile.html', context)
 
 @login_required
 def edit_profile(request,pk):

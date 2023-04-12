@@ -7,13 +7,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.utils import timezone
 
-
 EVENT_PER_PAGE = 10
 PAGE_PER_PAGE = 5
-
-
-
-
 
 @login_required
 def events(request):
@@ -25,15 +20,15 @@ def events(request):
 
     return render(request, 'events/events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending})
 
-@login_required
-def my_events(request):
-    # Get the current user's events they are attending
-    events = Event.objects.filter(users=request.user).order_by('-time')
-    events_attending = Event.objects.filter(users=request.user)
-    paginator = Paginator(events, EVENT_PER_PAGE)
-    page = request.GET.get('page')
-    events = paginator.get_page(page)
-    return render(request, 'events/my_events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending})
+# @login_required
+# def my_events(request):
+#     # Get the current user's events they are attending
+#     events = Event.objects.filter(users=request.user).order_by('-time')
+#     events_attending = Event.objects.filter(users=request.user)
+#     paginator = Paginator(events, EVENT_PER_PAGE)
+#     page = request.GET.get('page')
+#     events = paginator.get_page(page)
+#     return render(request, 'events/my_events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending})
 
 def event_detail(request, pk):
     event = Event.objects.get(pk=pk)

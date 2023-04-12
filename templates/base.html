@@ -1,121 +1,161 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!--Font awesome icons -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js" integrity="sha512-zZSw+r0iHldyzE4QlWW0avq3ICd5v5O5HxS5ABjA0pX9YFz8pW1kwIHtEmyCtE2A91f8i/mIaGKkMtdO/M2BvQ==" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+  <!--Font awesome icons -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"
+    integrity="sha512-zZSw+r0iHldyzE4QlWW0avq3ICd5v5O5HxS5ABjA0pX9YFz8pW1kwIHtEmyCtE2A91f8i/mIaGKkMtdO/M2BvQ=="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
-    <title>{% block title %} {% endblock %} </title>
-      <style>
-        .sr {
-          
-          
-        }
-    </style>
+  <title>{% block title %} {% endblock %} </title>
+  <style>
+    .sr {}
+  </style>
 </head>
+
 <body>
 
 
 
-   
-        <nav class="navbar navbar-expand-md navbar-dark bg-primary " style="background-color: #f0f5f5; font-size: 25px; padding-left:10%; padding-right: 10%;">
-          <a href="/" class="navbar-brand"><img src="/media/logo.png" width="218px" height="103px" alt="">
 
-          
-          </a>
+  <nav class="navbar navbar-expand-md navbar-dark bg-info "
+    style="background-color: #f0f5f5; font-size: 25px; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%;">
+    <a href="/" class="navbar-brand"><img src="/media/logo.png" width="218px" height="103px" alt="">
+      
+
+    </a>
+    
+    <a href="/events" class="nav-link nav-item text-light"><b>Events</b></a>
 
 
-           
-  
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ml-auto">
-                  
-                  {% if user.is_authenticated %}
-                  
-                    <a href="/events" class="nav-item nav-link"><b>Events</b></a>
-                    <a href="{% url 'my-events' %}" class="nav-item nav-link"><b>My Events</b></a>
-                    <a href="{% url 'users-profile' pk=request.user.pk %}" class="nav-item nav-link"><b>Profile</b></a>
-                    <a data-toggle="modal" data-target="#logoutModalCenter" style="cursor: pointer;" class="nav-item nav-link"><b>Logout</b></a>
-                    
-                    <div class="modal fade" id="logoutModalCenter" tabindex="-1" role="dialog" aria-labelledby="logoutModalCenter" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            Do you want to log out?
-                          </div>
-                          <div class="modal-footer">
-                            <a href="{% url 'logout' %}" class="btn btn btn-danger">Logout</a>
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i> Close</button>
-                            
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  {% else %}
-                    <a href="{% url 'login' %}" class="nav-item nav-link"><b>Sign in</b></a>
-                  {% endif %}
 
-                </div>
-            </div>
-        </nav>
-        <!--Any flash messages pop up in any page because this is the base template-->
-        {% if messages %}
+
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      
+      <div class="navbar-nav ml-auto" style="margin-right: 10%;">
         
-            {% for message in messages %}
-              <div class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger{% endif %} alert-dismissible mb-0" role="alert">{{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+        {% if user.is_authenticated %}
+        
+        <div class="dropdown d-none d-md-block" style="margin-right: 10%;">
+          <a href="#" id="imageDropdown" data-toggle="dropdown">
+            <img class="rounded-circle account-img " style="border:4px solid white;" width="70px"
+                 height="70px"
+                  src="{{ request.user.profile.avatar.url }} " />
+          </a>
+          <ul class="dropdown-menu p-0" role="menu" aria-labelledby="imageDropdown">
+           
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b>Profile</b></a>
+
+            <a class="dropdown-item btn btn-lg btn-blockbtn-outline-primary" data-toggle="modal" data-target="#logoutModalCenter"><b>Logout</b></a>
+
+          </ul>
+
+        </div>
+
+        <ul class="d-md-none">
+          <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b>Profile</b></a>
+          <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><b>Logout</b></a>
+        </ul>
+
+        
+
+
+
+        <div class="modal fade" id="logoutModalCenter" tabindex="-1" role="dialog" aria-labelledby="logoutModalCenter"
+          aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-            {% endfor %}
+              <div class="modal-body">
+                Do you want to log out?
+              </div>
+              <div class="modal-footer">
+                <a href="{% url 'logout' %}" class="btn btn btn-danger">Logout</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
+                  Close</button>
 
-      
+              </div>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}" class="nav-item nav-link"><b>Sign in</b></a>
         {% endif %}
 
-
-        <div class="jumbotron" style="margin:0; padding-left: 10%; padding-right: 10%; min-height: 1000px;">
-        {% block content %}{% endblock %}
       </div>
-    
+    </div>
+  </nav>
+  <!--Any flash messages pop up in any page because this is the base template-->
+  {% if messages %}
 
-      <div class="bg-primary text-center text-light p-3" >
-        <p style="color:#70b1fa"><b> © 2023 Copyright: Berk Hüseyin Gaffaroğlu </b></p>
-      </div>
+  {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger{% endif %} alert-dismissible mb-0"
+    role="alert">{{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %}
 
- 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <!-- A plugin for password show/hide  -->
-    <script src="https://kit.fontawesome.com/7c0cdfeb17.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
+  {% endif %}
+
+
+  <div class="jumbotron" style="margin:0; padding-left: 15%; padding-right: 15%; min-height: 1000px;">
+    {% block content %}{% endblock %}
+  </div>
+
+
+  <div class="bg-info text-center text-light p-3">
+    <p style="color:white"><b> © 2023 Copyright: Berk Hüseyin Gaffaroğlu </b></p>
+  </div>
+
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <!-- A plugin for password show/hide  -->
+  <script src="https://kit.fontawesome.com/7c0cdfeb17.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
   <script>
 
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
   </script>
 
 </body>
+
 </html>
-
-

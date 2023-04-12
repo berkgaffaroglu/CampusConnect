@@ -5,34 +5,36 @@
 
 <h1>Profile of: {{current_profile.username}} {% if can_change %}
     <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary btn-lg">Edit Profile</a>
-{% endif %}</h1>
-<hr/>
+    {% endif %}
+</h1>
+<hr />
 <div class="card">
 
     <div class="card-body p-5" style="min-height: 700px;">
 
         <div class="col-md-5">
-            <img class="rounded-circle account-img mb-3" data-toggle="tooltip" data-placement="right" width="100px" title='Profile picture of "{{current_profile.username}}"' height="100px"
-                src="{{ current_profile.profile.avatar.url }} "/>
+            <img class="rounded-circle account-img mb-3" data-toggle="tooltip" data-placement="right" width="100px"
+                title='Profile picture of "{{current_profile.username}}"' height="100px"
+                src="{{ current_profile.profile.avatar.url }} " />
         </div>
 
-        <hr/>
+        <hr />
         <div class="col-md-5 mb-4">
             <label>
                 <h4>Full Name:</h4>
             </label>
             <p>{{ current_profile.first_name }} {{current_profile.last_name}}</p>
         </div>
-        <hr/>
+        <hr />
 
         <div class="col-md-5 mb-4">
             <label>
                 <h4>Bio:</h4>
-            </label> 
+            </label>
             <p>{{ current_profile.profile.bio }}</p>
         </div>
 
-        <hr/>
+        <hr />
         {% if social_clubs|length > 0 %}
         <div class="col-md-5 mb-4">
             <label>
@@ -44,10 +46,10 @@
             {% endfor %}
 
         </div>
-        <hr/>
+        <hr />
         {% endif %}
 
-        {% if created_events|length > 0 %}
+        <!-- {% if created_events|length > 0 %}
         <div class="col-md-5 mb-4">
 
             <label>
@@ -61,6 +63,81 @@
             </ul>
         </div>
         <hr/>
+        {% endif %} -->
+        <div class="col-md-5 mb-2">
+            <label>
+                <h4>{% if current_profile.pk == request.user.pk %}
+                    Your Events:
+                    {% else %}
+                    {{current_profile.username|title}}'s Events:
+                    {% endif %}</h4>
+            </label>
+
+            
+
+        </div>
+        {% if events %}
+            {% for event in events %}
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <a href="{% url 'event-detail' pk=event.pk %}">
+                                <h5 class="card-title"><b>{{event.title|title}} {% if event.old_post %}<span
+                                            class="badge badge-secondary"><i class="fa-solid fa-skull"></i> Old Event</span>{% endif%}</b></h5>
+                            </a>
+                            <hr />
+                            <p class="card-text"><b>Description:</b> {{event.description|truncatechars:200|add:'...'}}</p>
+                            <hr />
+                            <p class="card-text"><b>Location:</b> {{event.location}}</p>
+                            <hr />
+                            <p class="card-text"><b>Time:</b> {{event.time|date:"j/m/Y l H:i" }}</p>
+                            <hr />
+                            <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
+                            <hr />
+                            <a href="{% url 'event-detail' pk=event.pk %}" class="btn btn-primary">Go To The Details</a>
+                        </div>
+                    </div>
+            {% endfor %}
+
+
+
+            <nav style="text-align:center;">
+                <ul class="pagination justify-content-center">
+
+                    {% if events.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    {% endif %}
+
+
+
+                    {% for num in events.paginator.page_range %}
+                    {% if num == events.number %}
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ num }}">{{ num }} <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% elif num > events.number|add:-5 and num < events.number|add:5 %} <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+
+
+                        {% if events.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ events.next_page_number }}">Next</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                        {% endif %}
+
+
+                </ul>
+            </nav>
+
+        {% else %}
+        There is nothing yet.
         {% endif %}
 
     </div>
