@@ -2,10 +2,17 @@
 {% block title %} Search Events {% endblock title%}
 
 {% block content %}
-<h1 style="display: inline-block;">Event Feed</h1>
-<div class="float-right" style="display: inline-block;">
+<h1 style="display: inline-block;">
+  {% if query|length %}
+  Search Results For: {{query}}
+  {% else %}
+  You Haven't Searched Anything
+  {% endif %}
+</h1>
+
+<div class="float-right" style="display: block;">
   <a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i> Create Event</a>
 </div>
-<hr />
+<hr /><br>
 {% include 'events/events_REUSE.html' %}
 {% endblock %}

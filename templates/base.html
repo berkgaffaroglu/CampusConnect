@@ -57,7 +57,7 @@
         {% if user.is_authenticated %}
         <!-- This part dissapears when mobile -->
         <form class="form-inline d-none d-md-flex mt-0" method="GET" action="{% url 'search-events' %}">
-          <input name="q" class="form-control mr-2 " type="search" placeholder="Search Events" aria-label="Search">
+          <input name="q" class="form-control mr-2 " type="search" placeholder="Search Events" aria-label="Search" required>
           <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form> 
 
@@ -86,8 +86,8 @@
           <a href="/events" class="nav-link nav-item text-light"><i class="fa-sharp fa-solid fa-bolt "></i><b> Events</b></a>
           <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
           <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
-          <form class="form-inline">
-            <input class="form-control mr-2" type="search" placeholder="Search Events" aria-label="Search">
+          <form class="form-inline" method="GET" action="{% url 'search-events' %}">
+            <input name="q" class="form-control mr-2" type="search" placeholder="Search Events" aria-label="Search" required>
             <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
           </form>
         </ul>
