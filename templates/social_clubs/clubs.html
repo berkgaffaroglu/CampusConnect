@@ -19,7 +19,7 @@
 
 <div class="card mb-3">
   <div class="card-body">
-    <a href="{% url %}">
+    <a href="{% url 'club-detail' pk=social_club.pk %}">
       <h5 class="card-title"><b>
         
 
@@ -29,7 +29,7 @@
   
 
           {% if social_club in social_clubs_attending %}
-          <span class="badge badge-success"><i class="fa-solid fa-check"></i> You have joined this club.</span>
+            <span class="badge badge-success"><i class="fa-solid fa-check"></i> You have joined this club.</span>
           {% endif %}
           
  
@@ -41,11 +41,11 @@
     <hr />
     <p class="card-text"><b>Description:</b> {% if social_club.description|length > 200 %}
       {{social_club.description|slice:200}} 
-      <a href="#">...</a>
+      <a href="{% url 'club-detail' pk=social_club.pk %}">...</a>
        {% else %} {{social_club.description}} {% endif %}</p>
     
     <hr />
-    <a href="#" class="btn btn-primary">Go To The Details</a>
+    <a href="{% url 'club-detail' pk=social_club.pk %}" class="btn btn-primary">Go To The Details</a>
   </div>
 </div>
 {% endfor %}

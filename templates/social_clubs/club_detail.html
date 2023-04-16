@@ -8,23 +8,16 @@
 
 {% if user.is_authenticated %}
 
-        {% if club.is_past %}
-            <button class="btn btn-secondary mb-2" disabled>
-              <i class="fa-solid fa-check"></i> Club Time Has Passed
-            </button>
 
-        {% elif is_attending %}
+
+        {% if is_attending %}
         <form method="POST">
           {% csrf_token %}
           <button type="submit" name="unattend" class="btn btn-danger mb-2">
-            <i class="fa-solid fa-x"></i> Unattend
+            <i class="fa-solid fa-x"></i> Unjoin
           </button>
         </form>
 
-        {% elif club.users.all|length > club.maximum_people %}
-            <button class="btn btn-danger mb-2" disabled>
-              <i class="fa-solid fa-check"></i> This Club Is Full!
-            </button>
 
         
 
@@ -32,7 +25,7 @@
             <form method="POST">
               {% csrf_token %}
               <button type="submit" name="attend" class="btn btn-success mb-2">
-                <i class="fa-solid fa-check"></i> Attend
+                <i class="fa-solid fa-check"></i> Join
               </button>
             </form>
 
@@ -48,27 +41,7 @@
     </h5>
     <p class="card-text"><b>Description:</b> {{club.description}}</p>
     <hr />
-    <p class="card-text"><b>Location:</b> {{club.location}}</p>
-    <hr />
-    <p class="card-text"><b>Time:</b> {{club.time|date:"j/m/Y l H:i" }}</p>
-    <hr />
-    <p class="card-text"><b>Maximum People:</b> {{club.maximum_people}}</p>
-    <hr />
-    <p class="card-text"><b>Fee:</b> {{club.price}} ₺</p>
-    <hr />
-    <p class="card-text"><b>Created by:</b></p>
-    <a href="{% url 'users-profile' pk=club.created_by.pk %}">
-      <img class="rounded-circle account-img" 
-      {% if club.created_by == user %}
-
-        title="{{club.created_by}} created this club!" data-toggle="tooltip" data-placement="right"
-        style="border: 4px solid green;" 
-        {% endif %} width="50px" height="50px"
-      
-        src="{{ club.created_by.profile.avatar.url }} " style="cursor: pointer;" />
-    </a>
-    <hr />
-    <b>Attendees ({{club.users.all|length}}/{{club.maximum_people}}): </b>
+    <b>Attendees ({{club.users.all|length}}): </b>
     {% if shortened_attendant_list|length > 0 %}
     <p class="card-text">
 
@@ -84,7 +57,9 @@
     {% else %}
     No one attended this club yet. <br /><br />
     {% endif %}
-
+    <p class="card-text"><b>Club's Events:</b> </p>
+    <hr />
+    {% include 'events/events_REUSE.html' with current_users_page=True %}
     {% if club.created_by.pk == request.user.pk %}
 
     <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal"

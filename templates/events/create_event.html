@@ -15,43 +15,5 @@
 {% endif %}
 <h1>Create Event</h1>
 <hr/>
-<div class="card">
-
-  <div class="form-content p-5">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="form-row">
-        <div class="col-md-5">
-          <div class="form-group">
-            <label class="">Title:</label>
-            {{ form.title }}
-
-          </div>
-          <div class="form-group">
-            <label class="">Description:</label>
-            {{ form.description }}
-          </div>
-          <div class="form-group">
-            <label class="">Place:</label>
-            {{ form.location }}
-          </div>
-          <div class="form-group">
-            <label class="">Time:</label>
-            {{ form.time }}
-          </div>
-          <div class="form-group">
-            <label class="">Entrance Fee:</label>
-            {{ form.price }}
-          </div>
-          <div class="form-group">
-            <label class="">Maximum People:</label>
-            {{ form.maximum_people }}
-          </div>
-        </div>
-      </div>
-      <br/>
-      <button type="submit" class="btn btn-primary btn-lg">Create</button>
-    </form>
-  </div>
-</div>
+{% include 'events/event_form.html' with create=False %}
 {% endblock %}

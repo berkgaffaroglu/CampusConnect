@@ -54,7 +54,7 @@ def event_detail(request, pk):
 @login_required
 def create_event(request):
     if request.method == 'POST':
-        form = CreateEventForm(request.POST)
+        form = CreateEventForm(request.POST, user=request.user)
         if form.is_valid():
             event = form.save(commit=False)
             event.created_by = request.user
@@ -64,7 +64,7 @@ def create_event(request):
             
             return redirect('event-detail', pk=event.pk)
     else:
-        form = CreateEventForm()
+        form = CreateEventForm(user=request.user)
     return render(request, 'events/create_event.html', {'form': form})
 
 @login_required
@@ -73,13 +73,13 @@ def edit_event(request, pk):
     if request.user.pk == event.created_by.pk:
         if request.method == 'POST':
             
-            form = CreateEventForm(request.POST,instance=event)
+            form = CreateEventForm(request.POST,instance=event, user=request.user)
             if form.is_valid():
                 form.save()
                 return redirect('event-detail', pk=event.pk)
 
         else:
-            form = CreateEventForm(instance=event)
+            form = CreateEventForm(instance=event, user=request.user)
 
         return render(request, 'events/edit_event.html', {'form':form})
 

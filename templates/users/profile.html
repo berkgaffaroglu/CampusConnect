@@ -33,8 +33,8 @@
             </label>
             <p>{{ current_profile.profile.bio }}</p>
         </div>
-
         <hr />
+        
         {% if social_clubs|length > 0 %}
         <div class="col-md-5 mb-4">
             <label>
@@ -64,6 +64,32 @@
         </div>
         <hr/>
         {% endif %} -->
+
+        <div class="col-md-5 mb-2">
+            <label>
+                <h4>{% if current_profile.pk == request.user.pk %}
+                    Your Groups:
+                    {% else %}
+                    {{current_profile.username|title}}'s Groups:
+                    {% endif %}</h4>
+            </label>
+
+            {% if clubs %}
+            <p>
+            {% for club in clubs %}
+            <a href="{% url 'club-detail' pk=club.pk %}">{{club.name|title}}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </p>
+            {% else %}
+            No groups.
+            {%endif%}
+        </div>
+        
+        
+
+
+        <hr/>
+
         <div class="col-md-5 mb-2">
             <label>
                 <h4>{% if current_profile.pk == request.user.pk %}
