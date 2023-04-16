@@ -26,21 +26,26 @@
   </style>
 </head>
 
-<body>
+<body style="zoom: 80%">
 
 
 
 
   <nav class="navbar navbar-expand-md navbar-dark bg-info "
-    style="background-color: #f0f5f5; font-size: 25px; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%;">
+    style="background-color: #f0f5f5; font-size: 25px; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%; max-height: max-content;">
     <a href="/" class="navbar-brand"><img src="/media/logo.png" width="218px" height="103px" alt="">
       
 
     </a>
-    
+    {% if user.is_authenticated %}
     <a href="/events" class="nav-link nav-item text-light d-none d-md-flex mt-0">
       <b> <i class="fa-sharp fa-solid fa-bolt "> </i> Events</b>
     </a>
+    <a href="/social-clubs" class="nav-link nav-item text-light d-none d-md-flex mt-0">
+      <b> <i class="fa-solid fa-people-group"></i> Social Clubs</b>
+    </a>
+    
+    {% endif %}
 
 
 
@@ -84,6 +89,7 @@
         <!-- This part shows on mobile -->
         <ul class="d-md-none">
           <a href="/events" class="nav-link nav-item text-light"><i class="fa-sharp fa-solid fa-bolt "></i><b> Events</b></a>
+          <a href="/social-clubs" class="nav-link nav-item text-white"><b> <i class="fa-solid fa-people-group"></i> Social Clubs</b></a>
           <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
           <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
           <form class="form-inline" method="GET" action="{% url 'search-events' %}">

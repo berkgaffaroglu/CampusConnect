@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('', include('events.urls')),
 
+    path('', include('social_clubs.urls')),
+
     path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, template_name='users/login.html',
                                            authentication_form=LoginForm), name='login'),
 

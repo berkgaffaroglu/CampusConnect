@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UserConfig',
     'events.apps.EventsConfig',
+    'social_clubs.apps.SocialClubsConfig',
     'social_django',
 ]
 

@@ -4,7 +4,7 @@
 {% block content %}
 <h1 style="display: inline-block;">
   {% if query|length %}
-  Search Results For: {{query}}
+  Search Results For: {{query|title}}
   {% else %}
   You Haven't Searched Anything
   {% endif %}
