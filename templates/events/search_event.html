@@ -13,6 +13,11 @@
 <div class="float-right" style="display: block;">
   <a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i> Create Event</a>
 </div>
-<hr /><br>
+<hr />
+
+<form class="form-inline mb-4" method="GET" action="{% url 'search-events' %}">
+  <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Events" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
+  <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+</form> 
 {% include 'events/events_REUSE.html' %}
 {% endblock %}

@@ -57,7 +57,7 @@
     <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
     <hr />
     
-    <p class="card-text"><b>Social Club:</b> 
+    <p class="card-text"><b>Event By:</b> 
       {% if event.social_club %}
       <a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club.name|title}}</a></p>
       {% else %}

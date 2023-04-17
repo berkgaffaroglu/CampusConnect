@@ -19,27 +19,27 @@
         </div>
 
         <hr />
-        <div class="col-md-5 mb-4">
-            <label>
+        <div class="col-md-5 ">
+            <label> <strong>
                 <h4>Full Name:</h4>
-            </label>
+            </strong> <label> 
             <p>{{ current_profile.first_name }} {{current_profile.last_name}}</p>
         </div>
         <hr />
 
-        <div class="col-md-5 mb-4">
-            <label>
+        <div class="col-md-5 ">
+            <label> <strong>
                 <h4>Bio:</h4>
-            </label>
+            </strong> <label> 
             <p>{{ current_profile.profile.bio }}</p>
         </div>
         <hr />
         
         {% if social_clubs|length > 0 %}
-        <div class="col-md-5 mb-4">
-            <label>
+        <div class="col-md-5 ">
+            <label> <strong>
                 <h4>Social Clubs:</h4>
-            </label>
+            </strong> <label> 
 
             {% for event in created_events %}
             <a href="{% url 'event-detail' pk=event.pk %}">{{event.title | title }}</a>
@@ -50,12 +50,12 @@
         {% endif %}
 
         <!-- {% if created_events|length > 0 %}
-        <div class="col-md-5 mb-4">
+        <div class="col-md-5 ">
 
-            <label>
+            <label> <strong>
                 <h4>Created Events:</h4>
-            </label>
-            <ul class="list-group mb-4">
+            </strong> <label> 
+            <ul class="list-group ">
                 {% for event in created_events %}
                 <li class="list-group-item"><a href="{% url 'event-detail' pk=event.pk %}">{{event.title | title }}</a>
                 </li>
@@ -66,13 +66,13 @@
         {% endif %} -->
 
         <div class="col-md-5 mb-2">
-            <label>
+            <label> <strong>
                 <h4>{% if current_profile.pk == request.user.pk %}
                     Your Groups:
                     {% else %}
                     {{current_profile.username|title}}'s Groups:
                     {% endif %}</h4>
-            </label>
+            </strong> <label> 
 
             {% if clubs %}
             <p>
@@ -80,8 +80,8 @@
             <a href="{% url 'club-detail' pk=club.pk %}">{{club.name|title}}</a>{% if not forloop.last %}, {% endif %}
             {% endfor %}
             </p>
-            {% else %}
-            No groups.
+            {% else %}<br/>
+            {{current_profile.username | title}} hasn't joined any social clubs yet.
             {%endif%}
         </div>
         
@@ -91,13 +91,13 @@
         <hr/>
 
         <div class="col-md-5 mb-2">
-            <label>
+            <label> <strong>
                 <h4>{% if current_profile.pk == request.user.pk %}
                     Your Events:
                     {% else %}
                     {{current_profile.username|title}}'s Events:
                     {% endif %}</h4>
-            </label>
+            </strong> <label> 
 
             
 

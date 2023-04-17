@@ -84,6 +84,8 @@ class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'users/change_password.html'
     success_message = "Successfully Changed Your Password"
     success_url = reverse_lazy('users-home')
+
+
 EVENT_PER_PAGE = 2
 PAGE_PER_PAGE = 5
 @login_required
@@ -96,7 +98,7 @@ def profile(request, pk):
                 can_change = False
         current_profile = User.objects.get(pk=pk)
         created_events = current_profile.created_events.all()
-        clubs = request.user.clubs_joined.all()
+        clubs = current_profile.clubs_joined.all()
         events = Event.objects.filter(users=current_profile).order_by('-time')
         events_attending = Event.objects.filter(users=request.user)
         paginator = Paginator(events, EVENT_PER_PAGE)

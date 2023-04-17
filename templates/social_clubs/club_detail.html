@@ -41,7 +41,7 @@
     </h5>
     <p class="card-text"><b>Description:</b> {{club.description}}</p>
     <hr />
-    <b>Attendees ({{club.users.all|length}}): </b>
+    <b>Members ({{club.members.all|length}}): </b>
     {% if shortened_attendant_list|length > 0 %}
     <p class="card-text">
 
@@ -55,9 +55,10 @@
       {% endfor %}
     </p>
     {% else %}
-    No one attended this club yet. <br /><br />
+    No one joined this club yet. 
     {% endif %}
-    <p class="card-text"><b>Club's Events:</b> </p>
+    <hr />
+    <p class="card-text"><b>Events By {{club.name|title}}:</b> </p>
     <hr />
     {% include 'events/events_REUSE.html' with current_users_page=True %}
     {% if club.created_by.pk == request.user.pk %}

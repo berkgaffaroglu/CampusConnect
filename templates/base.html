@@ -44,12 +44,15 @@
     <a href="/social-clubs" class="nav-link nav-item text-light d-none d-md-flex mt-0">
       <b> <i class="fa-solid fa-people-group"></i> Social Clubs</b>
     </a>
+
+    
     
     {% endif %}
 
 
 
 
+    
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
       <i class="fa-solid fa-bars " style="font-size: 30px;"></i>
     </button>
@@ -61,10 +64,7 @@
 
         {% if user.is_authenticated %}
         <!-- This part dissapears when mobile -->
-        <form class="form-inline d-none d-md-flex mt-0" method="GET" action="{% url 'search-events' %}">
-          <input name="q" class="form-control mr-2 " type="search" placeholder="Search Events" aria-label="Search" required>
-          <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form> 
+        
 
 
         
@@ -74,10 +74,11 @@
                  height="70px"
                   src="{{ request.user.profile.avatar.url }} " />
           </a>
-          <ul class="dropdown-menu p-0" role="menu" aria-labelledby="imageDropdown">
-           
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
+          
 
+          <ul class="dropdown-menu p-0" role="menu" aria-labelledby="imageDropdown">
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href=""><b><i class="fa-solid fa-bell"></i> Notifications ({{notifications|length}})</b></a>
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
             <a class="dropdown-item btn btn-lg btn-block btn-outline-primary" data-toggle="modal" data-target="#logoutModalCenter"><b><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</b></a>
 
             
@@ -88,14 +89,14 @@
         
         <!-- This part shows on mobile -->
         <ul class="d-md-none">
+          
           <a href="/events" class="nav-link nav-item text-light"><i class="fa-sharp fa-solid fa-bolt "></i><b> Events</b></a>
           <a href="/social-clubs" class="nav-link nav-item text-white"><b> <i class="fa-solid fa-people-group"></i> Social Clubs</b></a>
+          <hr style="background-color:white;">
+          <a class="nav-link nav-item text-white" href="#"><b><i class="fa-solid fa-bell"></i> Notifications ({{notifications|length}})</b></a>
           <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
+          <hr style="background-color:white;">
           <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
-          <form class="form-inline" method="GET" action="{% url 'search-events' %}">
-            <input name="q" class="form-control mr-2" type="search" placeholder="Search Events" aria-label="Search" required>
-            <button class="btn btn-primary mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-          </form>
         </ul>
 
         

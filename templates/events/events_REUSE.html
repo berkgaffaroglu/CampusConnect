@@ -5,13 +5,14 @@
 
 <div class="card mb-3">
   <div class="card-body">
-    <a href="{% url 'event-detail' pk=event.pk %}">
+    
       <h5 class="card-title"><b>
         
 
-
-          {{event.title | title }}
-
+        <a href="{% url 'event-detail' pk=event.pk %}">
+          {{event.title }} 
+        </a>
+        &nbsp
           {% if event.is_past %}
 
           <span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> This is an old event.</span>
@@ -28,7 +29,7 @@
           
  
         </b></h5>
-    </a>
+    
 
 
 
@@ -42,7 +43,7 @@
     <hr />
     <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
     <hr />
-    <a href="{% url 'event-detail' pk=event.pk %}" class="btn btn-primary">Go To The Details</a>
+    <a href="{% url 'event-detail' pk=event.pk %}" class="btn btn-primary btn-lg">Details</a>
   </div>
 </div>
 {% endfor %}

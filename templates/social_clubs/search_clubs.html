@@ -2,7 +2,13 @@
 {% block title %} Social Clubs {% endblock title%}
 
 {% block content %}
-<h1 style="display: inline-block;">Social Clubs</h1>
+<h1 style="display: inline-block;">
+    {% if query|length %}
+    Search Results For: {{query}}
+    {% else %}
+    You Haven't Searched Anything
+    {% endif %}
+</h1>
 <hr />
 <form class="form-inline mb-4" method="GET" action="{% url 'search-clubs' %}">
   <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Clubs" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
