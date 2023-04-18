@@ -58,10 +58,28 @@
     No one joined this club yet. 
     {% endif %}
     <hr />
-    <p class="card-text"><b>Events By {{club.name|title}}:</b> </p>
+    <b>Managers ({{club.managers.all|length}}): </b>
+    {% if club.managers.all|length > 0 %}
+    <p class="card-text">
+
+      {% for user_ in club.managers.all %}
+
+      <a href="{% url 'users-profile' pk=user_.pk %}">
+        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right"
+          title="{{user_.username}} is managing this club!" width="50px" height="50px"
+          src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
+      </a>
+      {% endfor %}
+    </p>
+    {% else %}
+    No one is managing this club yet.
+    {% endif %}
     <hr />
+
+    <p class="card-text"><b>Events By {{club.name|title}}:</b> </p>
+    
     {% include 'events/events_REUSE.html' with current_users_page=True %}
-    {% if club.created_by.pk == request.user.pk %}
+    {% if can_change %}
 
     <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal"
       data-target="#clubDeleteModalCenter">
@@ -97,6 +115,7 @@
           </div>
         </div>
       </div>
+      
     </div>
 
     {% endif %}

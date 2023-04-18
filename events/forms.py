@@ -3,18 +3,21 @@ from .models import Event
 from django.utils import timezone
 from social_clubs.models import SocialClub
 class CreateEventForm(forms.ModelForm):
-     
 
-    social_club = forms.ModelChoiceField(queryset=SocialClub.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
+
+   
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+        self.fields['social_club'].queryset = SocialClub.objects.filter(managers=self.user)
+        
     class Meta:
         model = Event
         fields = ['title', 'description', 'location', 'price', 'time','users',"created_by", "maximum_people", "social_club" 
                   ]
         exclude = ['users',"created_by"]
         widgets = {
+            'social_club': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
             'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Location'}),
@@ -37,12 +40,16 @@ class CreateEventForm(forms.ModelForm):
     def check_if_manager(self):
         social_club = self.cleaned_data.get('social_club')
         print(self.user)
-        if self.user not in social_club.managers.all():
-            raise forms.ValidationError('You must be a manager of the selected social club to create events.')
+        try:
+            if self.user not in social_club.managers.all():
+                raise forms.ValidationError('You must be a manager of the selected social club to create events.')
+        except AttributeError:
+            raise forms.ValidationError('Please select one of the social clubs.')
         return social_club
     
     def clean(self):
         cleaned_data = super().clean()
+        
         self.check_if_manager()
         self.check_max_people()
         return cleaned_data

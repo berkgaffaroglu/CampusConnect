@@ -93,7 +93,7 @@
     No one attended this event yet. <br /><br />
     {% endif %}
 
-    {% if event.created_by.pk == request.user.pk %}
+    {% if can_change %}
 
     <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal"
       data-target="#eventDeleteModalCenter">

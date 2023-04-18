@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import social_clubs, club_detail, search_clubs
+from .views import social_clubs, club_detail, create_club, edit_club, delete_club
 
 urlpatterns = [
     path('social-clubs/', social_clubs, name='social-clubs'),
     path('club-detail/<int:pk>', club_detail, name='club-detail'),
-    path('search-clubs/', search_clubs, name='search-clubs'),
+    path('create-club/', create_club, name='create-club'),
+    path('edit-club/<int:pk>/', edit_club, name='edit-club'),
+    path('delete-club/<int:pk>/', delete_club, name='delete-club'),
 ]

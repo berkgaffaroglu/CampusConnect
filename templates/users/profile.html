@@ -3,10 +3,32 @@
 {% block content %}
 
 
-<h1>Profile of: {{current_profile.username}} {% if can_change %}
+<h1>Profile of: {{current_profile.username}} 
+    {% if can_change %}
     <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary btn-lg">Edit Profile</a>
     {% endif %}
+    {% if request.user.is_staff and not current_profile.is_staff%}
+
+        {% if current_profile.profile.ambassador %}
+            <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="unauth" class="btn btn-danger mb-2">
+                <i class="fa-solid fa-x"></i> Un-authorize
+            </button>
+            </form>
+        {% else %}
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" name="auth" class="btn btn-success mb-2">
+                <i class="fa-solid fa-check"></i> Authorize
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+
 </h1>
+
+
 <hr />
 <div class="card">
 
@@ -104,7 +126,7 @@
         </div>
         <!-- This differentiation is made because we dont want to show some of the badges to the user when it is unnecessary. Like showing in a users profile
         where we already know the user is already attending. -->
-        {% include 'events/events_REUSE.html' with current_users_page=True %}
+        {% include 'events/events_REUSE.html' with current_users_page=True exclude=exclude  %}
 
     </div>
 </div>

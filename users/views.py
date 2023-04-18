@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
 from django.contrib import messages
+from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
 from django.core.paginator import Paginator
 from events.models import Event
 
@@ -90,13 +90,13 @@ EVENT_PER_PAGE = 2
 PAGE_PER_PAGE = 5
 @login_required
 def profile(request, pk):
+    current_profile = get_object_or_404(User, pk=pk)
     if request.method == 'GET':
         if request.user.is_authenticated:
             if request.user.pk == pk:
                 can_change = True
             else:
                 can_change = False
-        current_profile = User.objects.get(pk=pk)
         created_events = current_profile.created_events.all()
         clubs = current_profile.clubs_joined.all()
         events = Event.objects.filter(users=current_profile).order_by('-time')
@@ -110,12 +110,25 @@ def profile(request, pk):
                     'can_change': can_change, 
                     'current_profile':current_profile, 
                     'created_events':created_events,
-                    'clubs':clubs
+                    'clubs':clubs,
+                    'exclude':['time','fee','location']
                     }
-
-
-        # social_clubs = current_profile.social_clubs.all()
         return render(request, 'users/profile.html', context)
+    
+    elif request.method == 'POST':
+        if 'auth' in request.POST:
+            setattr(current_profile.profile,'ambassador', True)
+            current_profile.save()
+            messages.add_message(request,messages.constants.SUCCESS,f'You have successfully authorized {current_profile.username}')
+            return redirect("users-profile", pk=pk)
+
+        elif 'unauth' in request.POST:
+            setattr(current_profile.profile,'ambassador', False)
+            current_profile.save()
+            messages.add_message(request, messages.constants.SUCCESS, f'You have successfully un-authorized {current_profile.username}')
+            return redirect("users-profile", pk=pk)
+
+        
 
 @login_required
 def edit_profile(request,pk):
@@ -136,3 +149,17 @@ def edit_profile(request,pk):
             return render(request, 'users/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form, 'can_change': True})
     else:
         raise PermissionDenied("You can't edit this profile!")
+    
+USER_PER_PAGE = 50
+@login_required
+def users(request):
+    query = request.GET.get('q')
+    if query:
+        users = User.objects.filter(Q(username__icontains=query) | Q(first_name__icontains=query))
+    else:
+        users = User.objects.all()
+    paginator = Paginator(users, USER_PER_PAGE)
+    page = request.GET.get('page')
+    users = paginator.get_page(page)
+    return render(request, 'users/users.html', {'users':users,"query":query,'PAGE_PER_PAGE':PAGE_PER_PAGE})
+

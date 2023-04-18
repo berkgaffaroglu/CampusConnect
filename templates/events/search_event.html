@@ -4,15 +4,16 @@
 {% block content %}
 <h1 style="display: inline-block;">
   {% if query|length %}
-  Search Results For: {{query|title}}
+  Search Results For: {{query}}
   {% else %}
   You Haven't Searched Anything
   {% endif %}
 </h1>
-
+{% if manager %}
 <div class="float-right" style="display: block;">
   <a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i> Create Event</a>
 </div>
+{% endif %}
 <hr />
 
 <form class="form-inline mb-4" method="GET" action="{% url 'search-events' %}">
