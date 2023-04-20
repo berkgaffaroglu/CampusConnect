@@ -1,11 +1,17 @@
 from django import forms
-from .models import Event
+from .models import Event, EventImage
 from django.utils import timezone
 from social_clubs.models import SocialClub
+
+
+class EventImageForm(forms.ModelForm):
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+
+    class Meta:
+        model = EventImage
+        fields = ('images',)
+
 class CreateEventForm(forms.ModelForm):
-
-
-   
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
@@ -39,7 +45,7 @@ class CreateEventForm(forms.ModelForm):
     
     def check_if_manager(self):
         social_club = self.cleaned_data.get('social_club')
-        print(self.user)
+
         try:
             if self.user not in social_club.managers.all():
                 raise forms.ValidationError('You must be a manager of the selected social club to create events.')

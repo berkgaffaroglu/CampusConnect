@@ -3,14 +3,30 @@
 <div class="card">
 
   <div class="form-content p-5">
-    <form method="post" enctype="multipart/form-data">
+    <form method="POST" id="event-form" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="form-row">
         <div class="col-md-5">
           <div class="form-group">
             <label class="">Title:</label>
             {{ form.title }}
-
+          </div>
+          <div class="form-group">
+            <label class="">Images:</label>
+            {{ image_form.images }}
+            
+            <div id="image-preview">
+              
+              {% if form.instance and not create %}
+                  {% for image in form.instance.event_images.all %}
+                      <div class="image-preview-item">
+                          <img src="{{ image.image.url }}"  height="100px" width="100px" title="{{ image.image.name }}">
+                          <input type="checkbox" name="no_delete_image" checked value="{{ image.id }}">
+                   
+                      </div>
+                  {% endfor %}
+              {% endif %}
+          </div>
           </div>
           <div class="form-group">
             <label class="">Description:</label>

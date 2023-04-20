@@ -22,11 +22,10 @@
 
   <title>{% block title %} {% endblock %} </title>
   <style>
-    .sr {}
   </style>
 </head>
 
-<body style="zoom: 80%">
+<body style="zoom: 85%">
 
 
 
@@ -177,6 +176,77 @@
   <script src="https://kit.fontawesome.com/7c0cdfeb17.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
   <script>
+    var checkboxes = document.querySelectorAll('input[name="keep_image"]');
+  if (checkboxes) {
+  for (var i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('change', function() {
+      if (this.checked) {
+        this.name = 'no_delete';
+      } else {
+        this.name = '';
+      }
+    });
+  }
+  }
+  
+  
+    function previewImages() {  
+      var preview = document.querySelector('#image-preview');
+      if (this.files) {
+        [].forEach.call(this.files, readAndPreview);
+      }
+  
+      function readAndPreview(file) {
+        if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
+          return alert(file.name + " is not an image");
+        }
+  
+        var reader = new FileReader();
+  
+        reader.addEventListener("load", function () {
+  
+          var image = new Image();
+          image.height = 100;
+          image.title = file.name;
+          image.src = this.result;
+          
+          // Create a new checkbox for the image
+          var checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.name = 'keep_image_add';
+          checkbox.value = file.name
+          checkbox.checked = true;
+  
+          // Create a container for the image and the checkbox
+          var container = document.createElement('div');
+          container.className = 'image-preview-item';
+          container.appendChild(image);
+          container.appendChild(checkbox);
+  
+          preview.appendChild(container);
+  
+          // Add an event listener to the checkbox to remove the container if the checkbox is unchecked
+          checkbox.addEventListener('change', function () {
+            if (this.checked) {
+              checkbox.name = 'keep_image_add'
+            } else {
+              checkbox.name = ''
+            }
+  
+          });
+        }, false);
+  
+        reader.readAsDataURL(file);
+      }
+    }
+  
+    var id_images = document.querySelector('#id_images')
+    if(id_images){
+    id_images.addEventListener("change", previewImages);
+    }
+  
+  </script>
+  <script>
 
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
@@ -186,3 +256,4 @@
 </body>
 
 </html>
+

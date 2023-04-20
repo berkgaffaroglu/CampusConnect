@@ -17,5 +17,5 @@
   <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Events" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
   <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
 </form> 
-{% include 'events/events_REUSE.html' %}
+{% include 'events/events_REUSE.html' with exclude=exclude %}
 {% endblock content %}

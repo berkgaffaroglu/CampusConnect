@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='time',
-            field=models.DateTimeField(validators=[events.models.validate_datetime]),
+            field=models.DateTimeField(),
         ),
     ]

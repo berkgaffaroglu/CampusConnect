@@ -5,15 +5,14 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from social_clubs.models import SocialClub
-def validate_datetime(value):
-    return
+
     
 class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     location = models.TextField()
     price = models.FloatField(blank=True, default=0)
-    time = models.DateTimeField(validators=[validate_datetime])
+    time = models.DateTimeField()
     users = models.ManyToManyField(User, related_name='events_attending')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events', blank=True, default="", null=True)
     maximum_people = models.IntegerField(blank=True, default=3)
@@ -25,3 +24,7 @@ class Event(models.Model):
             return True
         else:
             return False
+
+class EventImage(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_images')
+    image = models.ImageField(upload_to='event_images/')

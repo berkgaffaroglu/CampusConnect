@@ -3,49 +3,83 @@
 
 {% block content %}
 
-<h1><b>{{event.title|title}}</b></h1>
+
 <div class="mt-3">
 
-{% if user.is_authenticated %}
+  {% if user.is_authenticated %}
 
-        {% if event.is_past %}
-            <button class="btn btn-secondary mb-2" disabled>
-              <i class="fa-solid fa-check"></i> Event Time Has Passed
-            </button>
+  {% if event.is_past %}
+  <button class="btn btn-secondary mb-2" disabled>
+    <i class="fa-solid fa-check"></i> Event Time Has Passed
+  </button>
 
-        {% elif is_attending %}
-        <form method="POST">
-          {% csrf_token %}
-          <button type="submit" name="unattend" class="btn btn-danger mb-2">
-            <i class="fa-solid fa-x"></i> Unattend
-          </button>
-        </form>
+  {% elif is_attending %}
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="unattend" class="btn btn-danger mb-2">
+      <i class="fa-solid fa-x"></i> Unattend
+    </button>
+  </form>
 
-        {% elif event.users.all|length > event.maximum_people %}
-            <button class="btn btn-danger mb-2" disabled>
-              <i class="fa-solid fa-check"></i> This Event Is Full!
-            </button>
+  {% elif event.users.all|length > event.maximum_people %}
+  <button class="btn btn-danger mb-2" disabled>
+    <i class="fa-solid fa-check"></i> This Event Is Full!
+  </button>
 
-        
 
-        {% else %}
-            <form method="POST">
-              {% csrf_token %}
-              <button type="submit" name="attend" class="btn btn-success mb-2">
-                <i class="fa-solid fa-check"></i> Attend
-              </button>
-            </form>
 
-        {% endif %}
-{% endif %}
+  {% else %}
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="attend" class="btn btn-success mb-2">
+      <i class="fa-solid fa-check"></i> Attend
+    </button>
+  </form>
+
+  {% endif %}
+  {% endif %}
 </div>
 
+
 <div class="card">
+
   <div class="card-body">
-    <h5 class="card-title d-flex align-items-center">
+    <h1><b>{{event.title|title}}</b></h1>
+
+    <center>
+      <div id="carouselExampleControls" data-ride="carousel" width="60%" class="carousel slide bg-dark p-5 mb-5">
+        <div class="carousel-inner ">
+          {% if images %}
+          {% for image in images %}
+
+          <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
+
+            <img class="img-fluid" src="{{ image.image.url }}" style="max-width:1000px; max-height:500px;">
+
+          </div>
+
+          {% endfor %}
+          {% else %}
+          <div class="carousel-item active">
+
+            <img class="img-fluid" src="/media/event_images/default.PNG" style="max-width:1000px; max-height:500px;">
+          </div>
+          {% endif%}
 
 
-    </h5>
+
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+
+    </center>
     <p class="card-text"><b>Description:</b> {{event.description}}</p>
     <hr />
     <p class="card-text"><b>Location:</b> {{event.location}}</p>
@@ -56,23 +90,20 @@
     <hr />
     <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
     <hr />
-    
-    <p class="card-text"><b>Event By:</b> 
+
+    <p class="card-text"><b>Event By:</b>
       {% if event.social_club %}
-      <a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club.name|title}}</a></p>
-      {% else %}
-      Independent
-      {% endif %}
+      <a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club.name|title}}</a>
+    </p>
+    {% else %}
+    Independent
+    {% endif %}
     <hr />
     <p class="card-text"><b>Created by:</b></p>
     <a href="{% url 'users-profile' pk=event.created_by.pk %}">
-      <img class="rounded-circle account-img" 
-      {% if event.created_by == user %}
-
+      <img class="rounded-circle account-img" {% if event.created_by == user %}
         title="{{event.created_by}} created this event!" data-toggle="tooltip" data-placement="right"
-        style="border: 4px solid green;" 
-        {% endif %} width="50px" height="50px"
-      
+        style="border: 4px solid green;" {% endif %} width="50px" height="50px"
         src="{{ event.created_by.profile.avatar.url }} " style="cursor: pointer;" />
     </a>
     <hr />

@@ -4,14 +4,25 @@
 {% if events %}
 {% for event in events %}
 
-<div class="card mb-3">
+<div class="card mb-5">
   <div class="card-body">
     {% if not 'title' in exclude %}
       <h5 class="card-title"><b>
         <a href="{% url 'event-detail' pk=event.pk %}">
+        <img class="img-fluid" src="
+        {% if event.event_images.all.first %}
+          {{ event.event_images.all.first.image.url}}
+        {% else %}
+          /media/event_images/default.png
+        {% endif %}
+        " height="150px" width="100px"> 
+      </a>
+      
+        <a href="{% url 'event-detail' pk=event.pk %}">
           {{event.title|title }} 
         </a>
-        &nbsp
+
+        
           {% if event.is_past %}
 
           <span class="badge badge-secondary"><i class="fa-solid fa-skull"></i> This is an old event.</span>
