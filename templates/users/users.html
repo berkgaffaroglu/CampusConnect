@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 style="display: inline-block;">{% if query %}Users: {{query}} ({{users|length}}) {% else %}Users ({{users|length}}){% endif %}</h1>
+<h1 style="display: inline-block;">{% if query %}Users: <span class="text-danger">{{query}} ({{users|length}})</span> {% else %}Users ({{users|length}}){% endif %}</h1>
 <hr/>
 <form class="form-inline mb-4" method="GET">
     <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Users" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
@@ -12,7 +12,8 @@
 <a href="{% url 'users-profile' pk=user.pk %}" class="mr-4">
 <div class="col-lg-4 col-md-6 col-sm-12 mr-4 p-1 text-center mb-3" style="background-color:#ffffff; border-radius: 10px; max-width: 150px;">
 
-    <img class="rounded-circle account-img mb-3" width="100px" height="100px"
+    <img class="rounded-circle account-img mb-3" {% if not user.is_active %}style=" border:6px solid #DC4C64;" data-toggle="tooltip" data-placement="right"
+    title="{{user.username}} is banned!"{% endif %} width="100px" height="100px"
   
         src="{{ user.profile.avatar.url }} " />
     
@@ -26,7 +27,7 @@
 
 
 <nav class="text-center">
-    <ul class="pagination justify-content-center">
+    <ul class="pagination justify-content-center" style="font-size: 1.5rem;">
   
       {% if users.has_previous %}
       <li class="page-item"><a class="page-link" href="?page={{ users.previous_page_number }}">Previous</a></li>

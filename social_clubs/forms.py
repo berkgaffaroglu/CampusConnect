@@ -1,5 +1,13 @@
 from django import forms
-from social_clubs.models import SocialClub
+from social_clubs.models import SocialClub, SocialClubImage
+
+class SocialClubImageForm(forms.ModelForm):
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+
+    class Meta:
+        model = SocialClubImage
+        fields = ('images',)
+
 class CreateSocialClubForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
@@ -10,6 +18,6 @@ class CreateSocialClubForm(forms.ModelForm):
         fields = ['name', "description",
                   ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
         }

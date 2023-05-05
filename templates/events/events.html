@@ -2,20 +2,20 @@
 {% block title %} Events {% endblock title%}
 
 {% block content %}
-<h1 style="display: inline-block;">  {% if query %}Events: {{query}} ({{events|length}}) {% else %}Events ({{events|length}}){% endif %}</h1>
+<h1 style="display: inline-block;">  {% if query %}Events: <span class="text-danger">{{query}} ({{events|length}}) </span> {% elif profile %}{{title}}{% else %}Event Feed{% endif %}</h1>
 <div class="float-right" style="display: inline-block;">
 
   {% if manager %}
-  <a class="btn btn-lg btn-primary button float-right" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i>
+  <a class="btn btn-lg btn-primary button float-right" style="font-size: 1.5rem;" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i>
     Create Event</a>
   {% endif %}
 </div>
 
 
 <hr />
-<form class="form-inline mb-4" method="GET">
+<form class="form-inline mb-4" style="font-size: 1.5rem;" method="GET">
   <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Events" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
   <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
 </form> 
-{% include 'events/events_REUSE.html' with exclude=exclude %}
+{% include 'events/partials/events.html' with exclude=exclude events_page=True%}
 {% endblock content %}

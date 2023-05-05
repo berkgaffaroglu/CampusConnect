@@ -1,0 +1,119 @@
+{% block content %}
+{% if comment.reply_to == None %}
+    <div class="card p-3 mb-1" style="font-size: 1.5rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
+      
+      <div class="card-body ">
+      <div class="comment_profile" style="display: inline-block;"> 
+        <a href="{% url 'users-profile' pk=comment.commentor.pk %}">
+          <img class="rounded-circle account-img mb-3 " data-toggle="tooltip" data-placement="right"
+            title="{{comment.commentor.username}}" width="50px" height="50px"
+            src="{{ comment.commentor.profile.avatar.url }} " style="cursor: pointer; border:2px solid #cfcfcf;" />
+        </a>
+        <a href="{% url 'users-profile' pk=comment.commentor.pk %}"><h3>{{comment.commentor}} </h3></a> 
+      </div>
+      |<small> {{comment.created_time|date:"d/m/Y H:i"}}</small>
+        <hr/>
+
+        <div class="comment mt-3" id="{{comment.pk}}">
+          <p>{{comment.comment}}</p>
+        </div>
+        
+        
+        {% if comment.commentor == request.user or can_change %}
+        <div class="comment-edit" style="display: none;" id="{{comment.pk}}">
+            <form method="POST">
+              {% csrf_token %}
+  
+              <textarea type="text" class="form-control w-50" style="font-size: 1.5rem; height: 100px;" name="edit_comment" required>{{comment.comment}}</textarea>
+              <br/>
+              <input type="hidden" name="comment_pk" value="{{comment.pk}}">
+              <button class="btn btn-primary btn-lg mr-2" style="color:white; font-size: 1.5rem;">
+                <i class="fa-solid fa-check"></i> Save
+              </button>
+          </form>
+  
+          </div>
+                                        <button type="submit" data-toggle="modal"
+                                        data-target="#eventCommentDeleteModalCenter" class="btn btn-lg btn-danger mb-2 float-right">
+                                        <i class="fa-solid fa-x"></i>&nbsp; Delete Comment
+                                        </button>
+                                        <button class="btn btn-primary btn-lg float-right mr-2 comment-edit-button" id="{{comment.pk}}" onclick="toggle_comment_edit({{comment.pk}})" style="color:white">
+                                        <i class="fa-solid fa-pen-to-square" ></i> Edit Comment
+                                        </button>
+                                        {% include 'events/partials/delete_modal.html' with comment=comment modal_id="eventCommentDeleteModalCenter" %}
+                                        
+        {% endif %}
+        
+<br/><br/>
+    <hr/>Reply:
+                <form method="POST">
+                    {% csrf_token %}
+                    <textarea name="reply" class="form-control w-50 mb-3" style="height: 60px; font-size: 1.5rem;" type="text" required></textarea>
+                    <input type="hidden" name="reply_to" value="{{comment.pk}}"/>
+                    <button type="submit" class="btn btn-lg btn-success">
+                        Reply
+                    </button>
+                </form>
+ 
+        </div>
+    
+    </div>
+
+        {% if comment.reply_comments.all|length > 0  %}
+            <div class="replies">
+              {% for reply in comment.reply_comments.all %}
+              <div class="comment_reply card p-3" style="font-size: 1.5rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%; margin-left: 60px;">
+                    <div class="card-body ">
+                      <div class="comment-profile" style="display: inline-block;">
+                      <a href="{% url 'users-profile' pk=comment.commentor.pk %}">
+                        <img class="rounded-circle account-img mb-3" data-toggle="tooltip" data-placement="right"
+                          title="{{reply.commentor.username}}" width="50px" height="50px"
+                          src="{{ reply.commentor.profile.avatar.url }} " style="cursor: pointer; border:2px solid #cfcfcf;" />
+                      </a> 
+                      <a href="{% url 'users-profile' pk=reply.commentor.pk %}"><h3>{{reply.commentor}} </h3></a>
+                    </div>
+                    | <small> {{reply.created_time|date:"d/m/Y H:i"}}</small>
+                      
+                      <hr/>
+          
+                      <div class="comment mt-3" id="{{reply.pk}}">
+                        <p>{{reply.comment}}</p>
+                      </div>
+                      
+                     
+                      {% if reply.commentor.pk == request.user.pk or can_change %}
+                      <div class="comment-edit" style="display: none;" id="{{reply.pk}}">
+                        <form method="POST">
+                          {% csrf_token %}
+                          <textarea type="text" class="form-control w-50" style="font-size: 1.5rem;" name="edit_reply" required>{{reply.comment}}</textarea>
+                          <br/>
+                          <input type="hidden" name="comment_pk" value="{{reply.pk}}">
+                          <button class="btn btn-primary btn-lg mr-2" style="color:white; font-size: 1.5rem;">
+                            <i class="fa-solid fa-check"></i> Save
+                          </button>
+                      </form>
+                      </div>
+
+
+                            <button type="submit" data-toggle="modal"
+                            data-target="#eventReplyDeleteModalCenter" class="btn btn-lg btn-danger mb-2 float-right">
+                                <i class="fa-solid fa-x"></i>&nbsp; Delete Comment
+                            </button>
+                            <button class="btn btn-primary btn-lg float-right mr-2 comment-edit-button" id="{{reply.pk}}" onclick="toggle_comment_edit({{reply.pk}})" style="color:white">
+                                <i class="fa-solid fa-pen-to-square" ></i> Edit Comment
+                            </button>
+                            {% include 'events/partials/delete_modal.html' with comment=reply modal_id="eventReplyDeleteModalCenter" %}
+                      {% endif %}
+                    </div>
+                  
+                  </div>
+            
+        
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -6,55 +6,78 @@
 
 <div class="mt-3">
 
+  <a 
+  
+  {% if request.GET.l == "true" %}
+    href="{% url 'liked-events' pk=request.user.pk %}" 
+  {% elif request.GET.dr == "true" %}
+    href="{% url 'dont-recommend-events' pk=request.user.pk %}"
+  {% else %}
+    href="/events?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}" 
+  {% endif %}
+
+  
+  
+  class="btn btn-lg btn-primary mb-3 p-3"><i class="fa-solid fa-arrow-left"></i> Go Back To The Events</a><br/>
+
   {% if user.is_authenticated %}
 
-  {% if event.is_past %}
-  <button class="btn btn-secondary mb-2" disabled>
-    <i class="fa-solid fa-check"></i> Event Time Has Passed
-  </button>
+          {% if event.is_past %}
+          <button class="btn btn-secondary btn-lg mb-2" disabled>
+            <i class="fa-solid fa-check"></i> Event Time Has Passed
+          </button>
 
-  {% elif is_attending %}
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="unattend" class="btn btn-danger mb-2">
-      <i class="fa-solid fa-x"></i> Unattend
-    </button>
-  </form>
+          {% elif is_attending %}
+          <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="unattend" class="btn btn-lg btn-danger mb-2 p-3">
+              <i class="fa-solid fa-x"></i> Unattend
+            </button>
+          </form>
 
-  {% elif event.users.all|length > event.maximum_people %}
-  <button class="btn btn-danger mb-2" disabled>
-    <i class="fa-solid fa-check"></i> This Event Is Full!
-  </button>
+          {% elif event.users.all|length >= event.maximum_people %}
+          <button class="btn btn-lg btn-danger mb-2 p-3" disabled>
+            <i class="fa-solid fa-check"></i> This Event Is Full!
+          </button>
 
+          {% else %}
+          <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="attend" class="btn btn-lg btn-success mb-2 p-3w">
+              <i class="fa-solid fa-check"></i> Attend
+            </button>
+          </form>
 
-
-  {% else %}
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="attend" class="btn btn-success mb-2">
-      <i class="fa-solid fa-check"></i> Attend
-    </button>
-  </form>
-
-  {% endif %}
+          {% endif %}
   {% endif %}
 </div>
 
 
-<div class="card">
+<div class="card " style="font-size:1.35rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
 
   <div class="card-body">
-    <h1><b>{{event.title|title}}</b></h1>
+    
+    <h1><b>Event: {{event.title|title}}</b>&nbsp;
+      <form style="display: inline;" method="POST">
+        {% csrf_token %}
+        
+        <button class="btn btn-lg btn-danger" name="like" style="font-size: 1.5rem; border-radius: 30px;">
+<i class="fa{% if not is_liked %}-solid{%else%}-regular{% endif %} fa-heart"></i> {{event.likes_event.all|length}} Likes</button>
+        </form>
+      </h1> 
+          
+    <small>{{event.created_time|date:"d/m/Y H:i"}}</small> 
+
 
     <center>
-      <div id="carouselExampleControls" data-ride="carousel" width="60%" class="carousel slide bg-dark p-5 mb-5">
+      <div id="carouselExampleControls" data-ride="carousel" style="width: 50%;" class="carousel slide bg-dark p-5 mb-5 mt-2">
         <div class="carousel-inner ">
-          {% if images %}
+         {% if images %}
           {% for image in images %}
 
           <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
 
-            <img class="img-fluid" src="{{ image.image.url }}" style="max-width:1000px; max-height:500px;">
+            <img class="img-fluid" src="{{ image.image.url }}">
 
           </div>
 
@@ -62,13 +85,14 @@
           {% else %}
           <div class="carousel-item active">
 
-            <img class="img-fluid" src="/media/event_images/default.PNG" style="max-width:1000px; max-height:500px;">
+            <img class="img-fluid" src="/media/event_images/default.PNG" >
           </div>
           {% endif%}
 
 
 
         </div>
+        
         <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="sr-only">Previous</span>
@@ -102,12 +126,15 @@
     <p class="card-text"><b>Created by:</b></p>
     <a href="{% url 'users-profile' pk=event.created_by.pk %}">
       <img class="rounded-circle account-img" {% if event.created_by == user %}
-        title="{{event.created_by}} created this event!" data-toggle="tooltip" data-placement="right"
-        style="border: 4px solid green;" {% endif %} width="50px" height="50px"
+      {% if not event.created_by.is_active %}
+          style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
+        title="{{event.created_by}} created this event!" {% endif %} data-toggle="tooltip" data-placement="right"
+        
+        style="border: 4px solid green;" {% endif %} width="60px" height="60px"
         src="{{ event.created_by.profile.avatar.url }} " style="cursor: pointer;" />
     </a>
     <hr />
-    <b>Attendees ({{event.users.all|length}}/{{event.maximum_people}}): </b>
+    <b>Attendees ({{shortened_attendant_list|length}}/{{event.maximum_people}}): </b>
     {% if shortened_attendant_list|length > 0 %}
     <p class="card-text">
 
@@ -115,7 +142,9 @@
 
       <a href="{% url 'users-profile' pk=user_.pk %}">
         <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right"
-          title="{{user_.username}} is attending this event!" width="50px" height="50px"
+        {% if not user_.is_active %}
+          style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
+          title="{{user_.username}} is attending this event!"{% endif%} width="60px" height="60px"
           src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
       </a>
       {% endfor %}
@@ -126,11 +155,11 @@
 
     {% if can_change %}
 
-    <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal"
+    <a type="button" class="btn btn-danger btn-lg float-right" style="color:white" data-toggle="modal"
       data-target="#eventDeleteModalCenter">
       <i class="fa-sharp fa-solid fa-trash"></i> Delete This Event
     </a>
-    <a href="{% url 'edit-event' pk=event.pk %}" class="btn btn-primary float-right mr-2" style="color:white">
+    <a href="{% url 'edit-event' pk=event.pk %}" class="btn btn-primary btn-lg float-right mr-2" style="color:white">
       <i class="fa-solid fa-pen-to-square"></i> Edit This Event
     </a>
 
@@ -166,6 +195,75 @@
   </div>
 
 </div>
+
+<div class="comments-section mt-5">
+  <h1>Comments ({{comments|length}})</h1>
+  <hr/>
+
+  <div class="create-comment card mt-3 mb-3" style="background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
+      <div class="card-body">
+        <h3>Share your thoughts:</h3>
+        <form method="POST">
+          {% csrf_token %}
+          <textarea name="comment" class="form-control w-50 mb-3" style="height: 60px; font-size: 1.5rem;" type="text"></textarea>
+          <button type="submit" class="btn btn-lg btn-success">
+            Comment
+          </button>
+        </form>
+      </div>
+  </div>
+
+  {% if comments %}
+  <div class="comment_container mb-5">
+    {% for comment in comments %}
+        {% include 'events/partials/comment_section.html' with comment=comment %}
+    {% endfor %}
+  </div>
+  
+
+
+
+  <nav class="text-center" style="font-size: 1.5rem;">
+    <ul class="pagination justify-content-center">
+
+      {% if comments.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Previous</a></li>
+      {% else %}
+      <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+      {% endif %}
+
+
+
+      {% for num in comments.paginator.page_range %}
+      {% if num == comments.number %}
+      <li class="page-item active">
+        <a class="page-link" href="?page={{ num }}">{{ num }} <span class="sr-only">(current)</span></a>
+      </li>
+      {% elif num > comments.number|add:-5 and num < comments.number|add:5 %} <li class="page-item">
+        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+
+
+        {% if comments.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+        {% endif %}
+
+
+    </ul>
+    
+  </nav>
+    
+    {% else %}
+    <h3>No comments yet.</h3>
+    {% endif %}
+
+
+
 
 
 

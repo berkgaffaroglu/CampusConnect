@@ -9,3 +9,14 @@ class SocialClub(models.Model):
     def __str__(self):
         return self.name
     
+
+class SocialClubImage(models.Model):
+    social_club = models.ForeignKey(SocialClub, on_delete=models.CASCADE, related_name='social_club_images')
+    image = models.ImageField(upload_to='social_club_images/')
+    def delete(self):
+        try:
+            self.image.delete()
+            super().delete()
+        except:
+            pass
+

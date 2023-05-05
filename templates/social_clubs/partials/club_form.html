@@ -1,0 +1,46 @@
+{% block content %}
+
+<div class="card" style="font-size: 1.5rem;">
+
+  <div class="form-content p-5" >
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="">Name:</label>
+            {{ form.name }}
+
+          </div>
+           <div class="form-group">
+            <label class="">Images:</label>
+           
+            {{ image_form.images }}
+            <p class="mb-2 mt-2"><b>* Select the images that you want to keep</b></p>
+            <div class="ml-5" style="max-width: fit-content;"  id="image-preview">
+              
+              {% if form.instance and not create %}
+                  {% for image in form.instance.social_club_images.all %}
+                      <div class="image-preview-item mt-3 mb-3">
+                          <label class="checkbox_img" for="{{image.id}}"><img src="{{ image.image.url }}" height="100px" width="150px" title="{{ image.image.name }}"></label>
+                          <input type="checkbox" name="no_delete_image" checked value="{{ image.id }}">
+                   
+                      </div>
+                  {% endfor %}
+              {% endif %}
+          </div>
+          </div>
+          <div class="form-group">
+            <label class="">Description:</label>
+            {{ form.description }}
+          </div>
+        </div>
+      </div>
+      <br/>
+      <button type="submit" class="btn btn-primary btn-lg">
+        {% if create%}Create{% else %}Save Changes{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

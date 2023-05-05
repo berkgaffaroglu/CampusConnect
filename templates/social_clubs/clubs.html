@@ -2,56 +2,91 @@
 {% block title %} Social Clubs {% endblock title%}
 
 {% block content %}
+
 <h1 style="display: inline-block;">
-  {% if query %}Social Clubs: {{query}} ({{social_clubs|length}}) {% else %}Social Clubs ({{social_clubs|length}}){% endif %}
+  {% if query %}Social Clubs: <span class="text-danger"> {{query}} ({{social_clubs|length}}) </span>{% else %}Social Clubs ({{social_clubs|length}}) {% endif %}
 </h1>
+{% if can_create_social_clubs %}
+<a class="btn btn-lg btn-primary button float-right" href="{% url 'create-club' %}"><i class="fa-solid fa-plus"> </i>
+  Create Social Club</a>
+{% endif %}
 <hr />
 <form class="form-inline mb-4" method="GET">
-  <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Clubs" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
+  <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Clubs" {% if query %}value="{{query}}" {%endif%} aria-label="Search" required>
   <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-</form> 
+</form>
+
 
 
 {% if social_clubs %}
-{% for social_club in social_clubs %}
+<div class="row mb-3">
+  {% for social_club in social_clubs %}
+  <div class="col-md-6 col-lg-3 col-sm-12 mt-3 mb-3">
+    <div class="card mb-3" style="min-height: 400px; background-color: #f3f3f3; border: 8px solid #cfcfcf; border-radius: 1%;">
+      {% if request.user in social_club.managers.all %}
+      <center>
+        <h3 class="mt-3"><span class="badge badge-info p-3"><i class="fa-solid fa-check"></i> You are managing this
+            club.</span></h3>
+      </center>
+      {% else %}
+      <center>
+        {% if social_club in social_clubs_attending %}
+        <h3 class="mt-3"><span class="badge badge-success p-3"><i class="fa-solid fa-check"></i> You have joined this
+            club.</span></h3>
+        {% else %}
+        <h3 class="mt-3"><span class="badge badge-info p-3"><i class="fa-solid fa-arrow-right"></i> Available to join</span>
+        </h3>
+        {% endif %}
+      </center>
+      {% endif %}
 
-<div class="card mb-3">
-  <div class="card-body">
-    
-      <h5 class="card-title"><b>
-        
+      <div class="card-body text-center">
 
-        <a href="{% url 'club-detail' pk=social_club.pk %}">
-          {{social_club.name | title }}
-          </a>
-  
-          &nbsp;
-          {% if social_club in social_clubs_attending %}
-          <span class="badge badge-success"><i class="fa-solid fa-check"></i> You have joined this club.</span>
-          {% endif %}
-          
- 
-        </b></h5>
-    </a>
+
+        <a
+          href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">
+          <img class="mb-3 img-fluid" style="border:2px solid black;  max-height: 200px;" src="
+      {% if social_club.social_club_images.all.first %}
+        {{ social_club.social_club_images.all.first.image.url}}
+      {% else %}
+        /media/social_club_images/default.png
+      {% endif %}
+      ">
+        </a>
 
 
 
-    <hr />
-    <p class="card-text"><b>Description:</b> {% if social_club.description|length > 200 %}
-      {{social_club.description|slice:200}} 
-      <a href="{% url 'club-detail' pk=social_club.pk %}">...</a>
-       {% else %} {{social_club.description}} {% endif %}</p>
-    
-    <hr />
-    <a href="{% url 'club-detail' pk=social_club.pk %}" class="btn btn-lg btn-primary">Details</a>
+
+        <a href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}"">
+          <h1 class=" card-title" style="font-size: 2rem;">
+          <b>{{social_club.name | title }}</b>
+          </h1>
+        </a>
+
+
+
+
+        </b>
+        <h1 class="card-title" style="font-size: 2rem;">
+          {{social_club.members.all|length}} Members
+        </h1>
+        <a href="/events/?q={{social_club.name}}&club={{social_club.pk}}">
+        <h1 class="card-title" style="font-size: 2rem;">
+          {{social_club.club_events.all|length}} Events
+        </h1>
+      </a>
+
+
+      </div>
+      <a href="{% url 'club-detail' pk=social_club.pk %}" class="btn btn-lg btn-primary w-100">Details</a>
+    </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
-
 
 
 <nav class="text-center">
-  <ul class="pagination justify-content-center">
+  <ul class="pagination justify-content-center" style="font-size: 1.5rem;">
 
     {% if social_clubs.has_previous %}
     <li class="page-item"><a class="page-link" href="?page={{ social_clubs.previous_page_number }}">Previous</a></li>
@@ -85,8 +120,9 @@
 </nav>
 
 {% else %}
-No results.
+<p style="font-size: 1.5rem;">No results.</p>
 {% endif %}
+
 
 
 {% endblock content %}

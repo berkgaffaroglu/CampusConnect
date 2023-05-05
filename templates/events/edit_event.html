@@ -2,7 +2,7 @@
 {% block title %} Edit Event {% endblock title%}
 {% block content %}
 {% if form.errors %}
-<div class="alert alert-danger alert-dismissible" role="alert">
+<div class="alert alert-danger alert-dismissible"  role="alert">
   <div id="form_errors">
     {% for key, value in form.errors.items %}
     {{ value }}
@@ -15,5 +15,5 @@
 {% endif %}
 <h1>Edit Event</h1>
 <hr/>
-{% include 'events/event_form.html' with create=False %}
+{% include 'events/partials/event_form.html' with create=False %}
 {% endblock %}

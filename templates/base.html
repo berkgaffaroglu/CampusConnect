@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="font-size: 10px;">
 
 <head>
   <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.8.2/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; css.integrity = "sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"; document.getElementsByTagName('head')[0].appendChild(css); })(); </script
@@ -22,30 +22,35 @@
 
   <title>{% block title %} {% endblock %} </title>
   <style>
+    .auth form button {
+      font-size: 1.5rem;
+    }
+.tooltip {
+  font-size: 1.3rem;
+}
   </style>
 </head>
 
-<body style="zoom: 85%">
+<body style="">
 
 
 
 
   <nav class="navbar navbar-expand-md navbar-dark bg-info "
-    style="background-color: #f0f5f5; font-size: 25px; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%; max-height: max-content;">
-    <a href="/" class="navbar-brand"><img src="/media/logo.png" width="218px" height="103px" alt="">
+    style="background-color: #f0f5f5; font-size: 1.75rem; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%; max-height: max-content;">
+    <a href="/events" class="navbar-brand"><img src="/media/logo.png" width="200px" height="95px" alt="">
       
 
     </a>
     {% if user.is_authenticated %}
-    <a href="/events" class="nav-link nav-item text-light d-none d-md-flex mt-0">
-      <b> <i class="fa-sharp fa-solid fa-bolt "> </i> Events</b>
-    </a>
     <a href="/social-clubs" class="nav-link nav-item text-light d-none d-md-flex mt-0">
       <b> <i class="fa-solid fa-people-group"></i> Social Clubs</b>
     </a>
-    <a href="/users" class="nav-link nav-item text-light d-none d-md-flex mt-0">
-      <b> <i class="fa-solid fa-user-group"></i> Users</b>
-    </a>
+    {% if request.user.is_staff %}
+      <a href="/users" class="nav-link nav-item text-light d-none d-md-flex mt-0">
+        <b> <i class="fa-solid fa-user-group"></i> Users <span class="text-danger">(Admin Only)</span></b>
+      </a>
+    {% endif %}
 
     
     
@@ -72,16 +77,17 @@
         
         <div class="dropdown d-none d-md-block" >
           <a href="#" id="imageDropdown" data-toggle="dropdown">
-            <img class="rounded-circle account-img " style="border:4px solid white;" width="70px"
-                 height="70px"
+            <img class="rounded-circle account-img " style="border:4px solid white;" width="60px"
+                 height="60px"
                   src="{{ request.user.profile.avatar.url }} " />
           </a>
           
 
-          <ul class="dropdown-menu p-0" role="menu" aria-labelledby="imageDropdown">
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href=""><b><i class="fa-solid fa-bell"></i> Notifications ({{notifications|length}})</b></a>
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" width="100%" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
-            <a class="dropdown-item btn btn-lg btn-block btn-outline-primary" data-toggle="modal" data-target="#logoutModalCenter"><b><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</b></a>
+          <ul class="dropdown-menu p-0"  role="menu" aria-labelledby="imageDropdown">
+            
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" style="font-size: 15px;" href="{% url 'notification' %}"><b><i class="fa-solid fa-bell"></i> Notifications ({{request.user.profile.new_notification_count}})</b></a>
+            <a class="dropdown-item btn-lg btn-block btn-outline-primary" style="font-size: 15px;"  href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
+            <a class="dropdown-item btn btn-lg btn-block btn-outline-primary" style="font-size: 15px;" data-toggle="modal" data-target="#logoutModalCenter"><b><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</b></a>
 
             
           </ul>
@@ -91,12 +97,14 @@
         
         <!-- This part shows on mobile -->
         <ul class="d-md-none">
-          
-          <a href="/events" class="nav-link nav-item text-light"><i class="fa-sharp fa-solid fa-bolt "></i><b> Events</b></a>
           <a href="/social-clubs" class="nav-link nav-item text-white"><b> <i class="fa-solid fa-people-group"></i> Social Clubs</b></a>
+          {% if request.user.is_staff %}
+          <a class="nav-link nav-item text-white" href="{% url 'users' %}"><b><i class="fa-solid fa-user"></i> Users <span class="text-danger">(Admin Only)</span></b></a>
+          {% endif %}
           <hr style="background-color:white;">
-          <a class="nav-link nav-item text-white" href="#"><b><i class="fa-solid fa-bell"></i> Notifications ({{notifications|length}})</b></a>
+          <a class="nav-link nav-item text-white" href="#"><b><i class="fa-solid fa-bell"></i> Notifications ({{request.user.profile.new_notification_count}})</b></a>
           <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
+          
           <hr style="background-color:white;">
           <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
         </ul>
@@ -135,28 +143,29 @@
     </div>
   </nav>
   <!--Any flash messages pop up in any page because this is the base template-->
-  {% if messages %}
 
-  {% for message in messages %}
-  <div
-    class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger{% endif %} alert-dismissible mb-0"
-    role="alert">{{ message }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  {% endfor %}
-
-
-  {% endif %}
 
 
   <div class="jumbotron" style="margin:0; padding-left: 15%; padding-right: 15%; min-height: 1000px;">
+    {% if messages %}
+
+    {% for message in messages %}
+    <div style="font-size:1.5rem;"
+      class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger{% endif %} alert-dismissible mb-3"
+      role="alert">{{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+  
+  
+    {% endif %}
     {% block content %}{% endblock %}
   </div>
 
 
-  <div class="bg-info text-center text-light p-3">
+  <div class="bg-info text-center text-light p-3" style="font-size:1.5rem;">
     <p style="color:white"><b> © 2023 Copyright: Berk Hüseyin Gaffaroğlu </b></p>
   </div>
 
@@ -176,6 +185,8 @@
   <script src="https://kit.fontawesome.com/7c0cdfeb17.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
   <script>
+
+
     var checkboxes = document.querySelectorAll('input[name="keep_image"]');
   if (checkboxes) {
   for (var i = 0; i < checkboxes.length; i++) {
@@ -206,7 +217,8 @@
         reader.addEventListener("load", function () {
   
           var image = new Image();
-          image.height = 100;
+          image.height = "100";
+          image.width = "150";
           image.title = file.name;
           image.src = this.result;
           
@@ -214,12 +226,13 @@
           var checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
           checkbox.name = 'keep_image_add';
+
           checkbox.value = file.name
           checkbox.checked = true;
   
           // Create a container for the image and the checkbox
           var container = document.createElement('div');
-          container.className = 'image-preview-item';
+          container.className = 'image-preview-item mt-3 mb-3';
           container.appendChild(image);
           container.appendChild(checkbox);
   
@@ -229,6 +242,7 @@
           checkbox.addEventListener('change', function () {
             if (this.checked) {
               checkbox.name = 'keep_image_add'
+              
             } else {
               checkbox.name = ''
             }
@@ -247,10 +261,38 @@
   
   </script>
   <script>
+      $(document).ready(function(){
+        // Add "active" class to Home tab on page load
+        $('.nav-item:first-child').addClass('active');
+        
+        // Remove "active" class from Home tab when another tab is clicked
+        $('a.nav-link').click(function(){
+            $('.nav-item').removeClass('active');
+            $(this).closest('.nav-item').addClass('active');
+        });
+    });
 
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+
+    function toggle_comment_edit(comment_pk){
+        var comment_div = document.querySelector('.comment[id="' + comment_pk + '"]');
+        var edit_comment_form = document.querySelector('.comment-edit[id="' + comment_pk + '"]');
+        var edit_comment_button = document.querySelector('.comment-edit-button[id="' + comment_pk + '"]');
+
+        if(edit_comment_form.style.display === "none"){
+          comment_div.style.display = "none";
+          edit_comment_button.innerHTML = "<i class='fa-solid fa-x'></i> Close Editing";
+          edit_comment_form.style.display = "block";
+        } else {
+          comment_div.style.display = "block";
+          edit_comment_button.innerHTML = '<i class="fa-solid fa-pen-to-square" ></i> Edit Comment';
+          edit_comment_form.style.display = "none";
+        }
+}
+
+
   </script>
 
 </body>

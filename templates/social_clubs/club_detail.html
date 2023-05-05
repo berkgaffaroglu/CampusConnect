@@ -2,44 +2,75 @@
 {% block title %} Clubs {% endblock title%}
 
 {% block content %}
+<a href="/social-clubs?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}"" class="btn btn-lg btn-primary mb-3 p-3"><i class="fa-solid fa-arrow-left"></i> Go Back To The Clubs</a><br/>
+<h1><b>Social Club: {{club.name|title}} </b></h1>
 
-<h1><b>{{club.name|title}}</b></h1>
 <div class="mt-3">
 
-{% if user.is_authenticated %}
+  {% if user.is_authenticated %}
 
 
 
-        {% if is_attending %}
-        <form method="POST">
-          {% csrf_token %}
-          <button type="submit" name="unattend" class="btn btn-danger mb-2">
-            <i class="fa-solid fa-x"></i> Unjoin
-          </button>
-        </form>
+  {% if is_attending %}
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="unattend" class="btn btn-danger btn-lg mb-2 p-3">
+      <i class="fa-solid fa-x"></i> Unjoin
+    </button>
+  </form>
 
 
-        
 
-        {% else %}
-            <form method="POST">
-              {% csrf_token %}
-              <button type="submit" name="attend" class="btn btn-success mb-2">
-                <i class="fa-solid fa-check"></i> Join
-              </button>
-            </form>
 
-        {% endif %}
-{% endif %}
+  {% else %}
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="attend" class="btn btn-success btn-lg mb-2 p-3">
+      <i class="fa-solid fa-check"></i> Join
+    </button>
+  </form>
+
+  {% endif %}
+  {% endif %}
 </div>
 
-<div class="card">
+<div class="card " style="font-size:1.5rem; background-color: #f3f3f3; border: 8px solid #cfcfcf; border-radius: 1%;" >
   <div class="card-body">
-    <h5 class="card-title d-flex align-items-center">
+    <center>
+      <div id="carouselExampleControls" data-ride="carousel" style="width: 50%;" class="carousel slide bg-dark p-5 mb-5">
+        <div class="carousel-inner">
+          {% if images %}
+          {% for image in images %}
+
+          <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
+
+            <img class="img-fluid" src="{{ image.image.url }}">
+
+          </div>
+
+          {% endfor %}
+          {% else %}
+          <div class="carousel-item active">
+
+            <img class="img-fluid" src="/media/event_images/default.PNG">
+          </div>
+          {% endif%}
 
 
-    </h5>
-    <p class="card-text"><b>Description:</b> {{club.description}}</p>
+
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+
+    </center>
+    <p class="card-text" ><b>Description:</b> {{club.description}}</p>
     <hr />
     <b>Members ({{club.members.all|length}}): </b>
     {% if shortened_attendant_list|length > 0 %}
@@ -47,15 +78,16 @@
 
       {% for user_ in shortened_attendant_list %}
 
-      <a href="{% url 'users-profile' pk=user_.pk %}">
-        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right"
-          title="{{user_.username}} is attending this club!" width="50px" height="50px"
+      <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
+        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" {% if not user_.is_active %}
+          style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
+          title="{{user_.username}} has joined this club!" {% endif%}data-placement="right" width="50px" height="50px"
           src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
       </a>
       {% endfor %}
     </p>
     {% else %}
-    No one joined this club yet. 
+    No one joined this club yet.
     {% endif %}
     <hr />
     <b>Managers ({{club.managers.all|length}}): </b>
@@ -64,28 +96,30 @@
 
       {% for user_ in club.managers.all %}
 
-      <a href="{% url 'users-profile' pk=user_.pk %}">
-        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right"
-          title="{{user_.username}} is managing this club!" width="50px" height="50px"
+      <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
+        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right" 
+        {% if not user_.is_active %} style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" 
+          {% else%}
+          title="{{user_.username}} is managing this club!" {% endif %} width="50px" height="50px"
           src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
       </a>
       {% endfor %}
     </p>
+    <hr/>
+    <p class="card-text"><b>Events:</b><a href="/events/?q={{club.name}}&club={{club.pk}}" > {{club.name}} Events</a></p>
+    <hr/>
     {% else %}
     No one is managing this club yet.
     {% endif %}
-    <hr />
 
-    <p class="card-text"><b>Events By {{club.name|title}}:</b> </p>
-    
-    {% include 'events/events_REUSE.html' with current_users_page=True %}
+
     {% if can_change %}
 
-    <a type="button" class="btn btn-danger float-right" style="color:white" data-toggle="modal"
+    <a type="button" class="btn btn-lg btn-danger float-right" style="color:white;" data-toggle="modal"
       data-target="#clubDeleteModalCenter">
       <i class="fa-sharp fa-solid fa-trash"></i> Delete This Club
     </a>
-    <a href="{% url 'edit-club' pk=club.pk %}" class="btn btn-primary float-right mr-2" style="color:white">
+    <a href="{% url 'edit-club' pk=club.pk %}" class="btn btn-lg btn-primary float-right mr-2" style="color:white">
       <i class="fa-solid fa-pen-to-square"></i> Edit This Club
     </a>
 
@@ -106,16 +140,16 @@
 
             <form method="POST" action="{% url 'delete-club' pk=club.pk %}">
               {% csrf_token %}
-              <button type="submit" class="btn btn btn-danger"><i class="fa-sharp fa-solid fa-trash"></i>
+              <button type="submit" class="btn btn-lg btn-danger"><i class="fa-sharp fa-solid fa-trash"></i>
                 Delete</button>
             </form>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
+            <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
               Close</button>
 
           </div>
         </div>
       </div>
-      
+
     </div>
 
     {% endif %}
