@@ -35,6 +35,7 @@ class Profile(models.Model):
         querset = Event.objects.filter(id__in=liked)
         
         return querset
+    
 
 
 
@@ -52,7 +53,7 @@ class Notification(models.Model):
         self.user.profile.new_notification_count += 1
         self.user.save()
         # Send email
-        email = True
+        email = False
         if email:
             email = self.user.email
             # email = "berkgaffaroglu@gmail.com"

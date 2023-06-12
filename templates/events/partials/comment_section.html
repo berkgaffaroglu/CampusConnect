@@ -1,6 +1,7 @@
 {% block content %}
 {% if comment.reply_to == None %}
-    <div class="card p-3 mb-1" style="font-size: 1.5rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
+    <div class="card comment-card mb-1 text-left" style=" margin-bottom: 15px !important;">
+      
       
       <div class="card-body ">
       <div class="comment_profile" style="display: inline-block;"> 
@@ -45,16 +46,19 @@
         {% endif %}
         
 <br/><br/>
-    <hr/>Reply:
+<div class="comment-section">
+<div class=" p-5 w-50" style="border-radius: 15px; background-color: rgba(0, 0, 0, 0.685);">
+   <h2 class="text-white mb-3">Reply:</h2>
                 <form method="POST">
                     {% csrf_token %}
-                    <textarea name="reply" class="form-control w-50 mb-3" style="height: 60px; font-size: 1.5rem;" type="text" required></textarea>
+                    <textarea name="reply" class="form-control w-100 mb-3" style="height: 100px; font-size: 1.5rem;" type="text" required></textarea>
                     <input type="hidden" name="reply_to" value="{{comment.pk}}"/>
-                    <button type="submit" class="btn btn-lg btn-success">
-                        Reply
+                    <button type="submit" class="btn btn-lg btn-secondary w-25" style="font-size: 2rem;">
+                        Submit
                     </button>
                 </form>
  
+  </div>
         </div>
     
     </div>
@@ -62,7 +66,7 @@
         {% if comment.reply_comments.all|length > 0  %}
             <div class="replies">
               {% for reply in comment.reply_comments.all %}
-              <div class="comment_reply card p-3" style="font-size: 1.5rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%; margin-left: 60px;">
+              <div class="comment_reply event-card card" style="margin-left: 60px; max-width: 100%; margin-top: 0;">
                     <div class="card-body ">
                       <div class="comment-profile" style="display: inline-block;">
                       <a href="{% url 'users-profile' pk=comment.commentor.pk %}">
@@ -111,6 +115,7 @@
         
         {% endfor %}
     </div>
+</div>
 </div>
 
 

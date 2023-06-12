@@ -1,0 +1,62 @@
+
+@media (min-width: 1000px) { 
+    .club-card {
+        width: 100%;
+    }
+ }
+
+
+.club-card {
+    height: 100%;
+    font-size: 2rem;
+
+}
+
+.club-image {
+    box-shadow: 0px 5px 10px rgb(0, 0, 0);
+    margin-bottom: 50px;
+    margin-top: 25px;
+    transition: 0.2s;
+}
+
+.club-image:hover {
+    box-shadow: 0px 10px 20px rgb(0, 0, 0);
+    margin-bottom: 50px;
+    margin-top: 25px;
+    transition: 0.2s;
+}
+
+
+.club-title {
+    color: white;
+    transition: 0.2s;
+    display: inline-block;
+    background-color: #00465c;
+    padding: 20px;
+    border-radius: 5px;
+
+
+}
+
+.club-title:hover {
+
+    transition: 0.2s;
+    background-color: #005c79;
+
+}
+
+.club-details-button {
+    width: 80%;
+    border-radius: 5px;
+    font-size: 2rem;
+    padding: 15px;
+    background-color: #00465c;
+}
+
+.club-details-button:hover {
+    width: 80%;
+    border-radius: 5px;
+    font-size: 2rem;
+    padding: 15px;
+    background-color: #005c79;
+}

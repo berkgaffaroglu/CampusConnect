@@ -18,9 +18,9 @@ from urllib.parse import urlencode
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from .models import User
-
+@login_required
 def home(request):
-    return redirect('events/')
+    return render(request, 'users/home.html')
 
 
 

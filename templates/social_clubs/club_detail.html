@@ -2,160 +2,206 @@
 {% block title %} Clubs {% endblock title%}
 
 {% block content %}
-<a href="/social-clubs?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}"" class="btn btn-lg btn-primary mb-3 p-3"><i class="fa-solid fa-arrow-left"></i> Go Back To The Clubs</a><br/>
-<h1><b>Social Club: {{club.name|title}} </b></h1>
 
-<div class="mt-3">
+<center>
+  <div class="card event-detail-card mb-0" style="margin-bottom: 0;">
+    <a 
+    
+    href="/social-clubs?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}"
+  
+    
+    
+    class="btn btn-lg btn-light  p-3" style="width: 100px; font-size: 2rem;"><i class="fa-solid fa-arrow-left"></i></a>
+    <br>
+    <div class="card-body d-flex flex-row align-middle" style="align-items: center;">
+      <h1><b>{{club.name}}</b></h1>
 
-  {% if user.is_authenticated %}
+      {% if user.is_authenticated and can_change %}
 
+      <div class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+    
+          <ul class="notification-drop">
+            <li class="item">
+              <i class="fa-solid fa-ellipsis" style="font-size: 3rem;"></i>
+              <ul>
+                {% if can_change %}
+                <a style="text-decoration: none; color: black;" href="{% url 'edit-club' pk=club.pk %}"><li style="text-decoration: none; font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Edit</li></a>
+                <a style="text-decoration: none; color: black; " href="{% url 'delete-club' pk=club.pk %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Delete</li></a>
+                {% endif %}
 
-
-  {% if is_attending %}
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="unattend" class="btn btn-danger btn-lg mb-2 p-3">
-      <i class="fa-solid fa-x"></i> Unjoin
-    </button>
-  </form>
-
-
-
-
-  {% else %}
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="attend" class="btn btn-success btn-lg mb-2 p-3">
-      <i class="fa-solid fa-check"></i> Join
-    </button>
-  </form>
-
-  {% endif %}
-  {% endif %}
-</div>
-
-<div class="card " style="font-size:1.5rem; background-color: #f3f3f3; border: 8px solid #cfcfcf; border-radius: 1%;" >
-  <div class="card-body">
-    <center>
-      <div id="carouselExampleControls" data-ride="carousel" style="width: 50%;" class="carousel slide bg-dark p-5 mb-5">
-        <div class="carousel-inner">
-          {% if images %}
-          {% for image in images %}
-
-          <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
-
-            <img class="img-fluid" src="{{ image.image.url }}">
-
-          </div>
-
-          {% endfor %}
-          {% else %}
-          <div class="carousel-item active">
-
-            <img class="img-fluid" src="/media/event_images/default.PNG">
-          </div>
-          {% endif%}
-
-
-
+              </ul>
+            </li>
+          </ul>
+        </li>
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
+      {% endif %}
+    </div>
+  <!--   
+    <div class="event-image hover-overlay ripple rounded-0 w-100" data-mdb-ripple-color="light">
+      <img class="img-fluid" src="
+      {% if event.event_images.all.first %}
+        {{ event.event_images.all.first.image.url}}
+      {% else %}
+        /media/event_images/default.png
+      {% endif %}"
+        alt="Card image cap" />
+      <a href="#!">
+        <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+      </a>
+    </div> -->
+  <center>
+    <div id="carouselExampleControls" data-ride="carousel" class="carousel slide p-2  hover-overlay ripple rounded-0 w-100">
+      <div class="carousel-inner ">
+       {% if images %}
+        {% for image in images %}
+  
+        <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
+  
+          <img class="img-fluid" src="{{ image.image.url }}">
+  
+        </div>
+  
+        {% endfor %}
+        {% else %}
+        <div class="carousel-item active">
+  
+          <img class="img-fluid" src="/media/event_images/default.PNG" >
+        </div>
+        {% endif%}
+  
+  
+  
       </div>
-
-    </center>
-    <p class="card-text" ><b>Description:</b> {{club.description}}</p>
-    <hr />
-    <b>Members ({{club.members.all|length}}): </b>
-    {% if shortened_attendant_list|length > 0 %}
-    <p class="card-text">
-
-      {% for user_ in shortened_attendant_list %}
-
-      <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
-        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" {% if not user_.is_active %}
-          style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
-          title="{{user_.username}} has joined this club!" {% endif%}data-placement="right" width="50px" height="50px"
-          src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
+      
+      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
       </a>
-      {% endfor %}
-    </p>
-    {% else %}
-    No one joined this club yet.
-    {% endif %}
-    <hr />
-    <b>Managers ({{club.managers.all|length}}): </b>
-    {% if club.managers.all|length > 0 %}
-    <p class="card-text">
-
-      {% for user_ in club.managers.all %}
-
-      <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
-        <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right" 
-        {% if not user_.is_active %} style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" 
-          {% else%}
-          title="{{user_.username}} is managing this club!" {% endif %} width="50px" height="50px"
-          src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
       </a>
-      {% endfor %}
-    </p>
+    </div>
+  
+  
+    <div class="card-body text-left">
+  
+      <div class="description text-left p-4" style="font-size: 2rem;">
+        
+  
+          
+          {% if user.is_authenticated %}
+  
+          {% if event.is_past %}
+          <button class="btn btn-secondary btn-lg mb-2" disabled>
+            <i class="fa-solid fa-check"></i> Event Time Has Passed
+          </button>
+  
+          {% elif is_attending %}
+          <form method="POST" class="inline">
+            {% csrf_token %}
+            <button class="btn btn-lg mb-4" name="unattend" style="font-size: 3rem; border-radius: 30px; {% if is_attending %}color: red;{%endif%} ">
+              <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Leave</b>
+          </form>
+  
+  
+          {% else %}
+          <form method="POST">
+            {% csrf_token %}
+            <button class="btn btn-lg mb-4" name="attend" style="font-size: 3rem; border-radius: 30px; {% if not is_liked %}color: black;{%endif%} ">
+              <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Join</b>
+          </form>
+  
+          {% endif %}
+  {% endif %}
+  {% if can_change %}
+  
+  <div class="modal fade" id="eventDeleteModalCenter" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you want to delete this club?
+        </div>
+        <div class="modal-footer">
+  
+          <form method="POST" action="{% url 'delete-club' pk=club.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn btn-danger"><i class="fa-sharp fa-solid fa-trash"></i>
+              Delete</button>
+          </form>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
+            Close</button>
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {% endif %}
+  <b>Description: </b>
+  <p class="card-text">{{club.description}}</p>
+        <hr width="100%"/>
+        <b>Members ({{shortened_attendant_list|length}}): </b>
+      {% if shortened_attendant_list|length > 0 %}
+      <p class="card-text">
+  
+        {% for user_ in shortened_attendant_list %}
+  
+        <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
+          <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right"
+          {% if not user_.is_active %}
+            style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
+            title="{{user_.username}} is attending this event!"{% endif%} width="60px" height="60px"
+            src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
+        </a>
+        {% endfor %}
+      </p>
+      {% else %}
+      No one attended this event yet. <br /><br />
+      {% endif %}
+      <hr />
+      <b>Managers ({{club.managers.all|length}}): </b>
+      {% if club.managers.all|length > 0 %}
+      <p class="card-text">
+  
+        {% for user_ in club.managers.all %}
+  
+        <a href="{% url 'users-profile' pk=user_.pk %}?club={{ club.pk }}">
+          <img class="rounded-circle account-img mt-3" data-toggle="tooltip" data-placement="right" 
+          {% if not user_.is_active %} style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" 
+            {% else%}
+            title="{{user_.username}} is managing this club!" {% endif %} width="50px" height="50px"
+            src="{{ user_.profile.avatar.url }} " style="cursor: pointer;" />
+        </a>
+        {% endfor %}
+      </p>
+
+{%endif%}
     <hr/>
     <p class="card-text"><b>Events:</b><a href="/events/?q={{club.name}}&club={{club.pk}}" > {{club.name}} Events</a></p>
-    <hr/>
-    {% else %}
-    No one is managing this club yet.
-    {% endif %}
+  
 
+  
 
-    {% if can_change %}
-
-    <a type="button" class="btn btn-lg btn-danger float-right" style="color:white;" data-toggle="modal"
-      data-target="#clubDeleteModalCenter">
-      <i class="fa-sharp fa-solid fa-trash"></i> Delete This Club
-    </a>
-    <a href="{% url 'edit-club' pk=club.pk %}" class="btn btn-lg btn-primary float-right mr-2" style="color:white">
-      <i class="fa-solid fa-pen-to-square"></i> Edit This Club
-    </a>
-
-    <div class="modal fade" id="clubDeleteModalCenter" tabindex="-1" role="dialog"
-      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Do you want to delete this club?
-          </div>
-          <div class="modal-footer">
-
-            <form method="POST" action="{% url 'delete-club' pk=club.pk %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-lg btn-danger"><i class="fa-sharp fa-solid fa-trash"></i>
-                Delete</button>
-            </form>
-            <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
-              Close</button>
-
-          </div>
-        </div>
       </div>
-
+      
+  
+  
     </div>
-
-    {% endif %}
   </div>
+  
+  
+  </center>
 
-</div>
+
 
 
 

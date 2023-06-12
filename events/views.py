@@ -13,6 +13,7 @@ from .models import SocialClub
 from users.models import User
 from django.http import HttpResponse
 
+
 EVENT_PER_PAGE = 10
 PAGE_PER_PAGE = 5
 
@@ -32,7 +33,6 @@ def is_past(self):
     
 @login_required
 def events(request):
-    
     try:
         query = request.GET.get('q').split('&')[0]
         search=True
@@ -70,7 +70,7 @@ def events(request):
             request.user.profile.dont_recommend_events.add(Event.objects.get(pk=event_pk))
             request.user.profile.save()
             messages.add_message(request,messages.constants.SUCCESS,f"The event {Event.objects.get(pk=event_pk).title} won't be recommended to you again. Go to your profile and click to Dont Recommend Events if you change your mind.")
-        return redirect("events")
+    
 
     return render(request, 'events/events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE,'events_attending': events_attending, "query":query, "manager":manager, "search":search, 'exclude':['fee','location','description','time']})
 
@@ -131,6 +131,13 @@ def event_detail(request, pk):
     paginator = Paginator(comments, COMMENT_PER_PAGE)
     page = request.GET.get('page')
     comments = paginator.get_page(page)
+    try:
+        if request.GET["clear_notification"]=="true":
+            request.user.profile.new_notification_count = 0
+            request.user.save()
+    except:
+        pass
+
     # This if statement is checking if the user is capable of editing the current event. To be able to edit,
     # user has to be either from the staff or the manager of the club that posted the event.
     if request.user in event.social_club.managers.all() or request.user.is_staff: 
@@ -305,8 +312,77 @@ def delete_event(request, pk):
     if not request.user in event.social_club.managers.all() or not request.user.is_staff: 
         raise PermissionDenied()
     else:
-        if request.method == 'POST':
-            event.delete()
+
+        event.delete()
         messages.add_message(request, messages.constants.ERROR, "Event deleted!")
         return redirect('events')
 
+@login_required
+def delete_comment(request,pk):
+    
+    comment = get_object_or_404(EventComment, pk=pk)
+    is_reply = comment.reply_to
+    comment_event = comment.event
+    if request.user == comment.commentor:
+        comment.delete()
+    else:
+        raise PermissionDenied
+    if is_reply:
+        print('wtf')
+    messages.add_message(request, messages.constants.SUCCESS, f"Your {'reply' if is_reply else 'reply'} is deleted!")
+    return redirect('event-detail', pk=comment_event.pk)
+
+
+
+@login_required
+def toggle_recommend_event(request,pk,detail='false'):
+    if get_object_or_404(Event, pk=pk) in request.user.profile.dont_recommend_events.all():
+        request.user.profile.dont_recommend_events.remove(Event.objects.get(pk=pk))
+        messages.add_message(request,messages.constants.SUCCESS,f"The event {Event.objects.get(pk=pk).title} will be recommended to you again.")
+    else:
+        request.user.profile.dont_recommend_events.add(Event.objects.get(pk=pk))
+        messages.add_message(request,messages.constants.SUCCESS,f"The event {Event.objects.get(pk=pk).title} won't be recommended to you again.")
+    request.user.profile.save()
+    if detail=='true':
+        return redirect('event-detail',pk=pk)
+    else:
+        return redirect('events')  
+
+@login_required
+def toggle_like_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    likes = event.likes_event
+    if len(EventHeart.objects.filter(event=event, user=request.user))==0:
+        likes.create(event=event, user=request.user)
+        messages.add_message(request, messages.constants.SUCCESS, f'You have liked the event {event.title}!')
+    else:
+        EventHeart.objects.filter(event=event, user=request.user).all().delete()
+        messages.add_message(request, messages.constants.SUCCESS, f'You have un-liked the event {event.title}!')
+    return redirect('events')
+
+
+@login_required
+def my_events(request):
+    events = Event.objects.filter(users=request.user).order_by('-created_time')
+    paginator = Paginator(events, EVENT_PER_PAGE)
+    page = request.GET.get('page')
+    events = paginator.get_page(page)
+    return render(request, 'events/my_events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE, 'exclude':['fee','location','description','time']})
+
+
+@login_required
+def search(request):
+    try:
+        query = request.GET.get('q').split('&')[0]
+    except AttributeError:
+        query = request.GET.get('q')
+
+
+    events = Event.objects.filter(Q(title__icontains=query) | Q(social_club__name__icontains=query)).annotate(is_attending=Count('users', filter=Q(users=request.user))) \
+        .annotate(is_liked=Count('likes_event', filter=Q(likes_event__user=request.user))) \
+        .order_by('-is_liked', '-is_attending', '-created_time')
+
+    paginator = Paginator(events, EVENT_PER_PAGE)
+    page = request.GET.get('page')
+    events = paginator.get_page(page)
+    return render(request, 'events/my_events.html', {'events': events, 'PAGE_PER_PAGE':PAGE_PER_PAGE, 'exclude':['fee','location','description','time']})

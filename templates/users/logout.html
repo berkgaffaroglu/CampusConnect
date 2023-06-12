@@ -2,12 +2,12 @@
 {% block title %}Logout{% endblock title %}
 {% block content %}
 <center>
-    <div class="card mt-5" style="width: 500px; margin-bottom: 600px;">
+    <div class="card mt-5" style="padding: 100px; ">
 
         <div class="card-body">
-        <h5 class="card-title">You have been logged out</h5>
+        <h5 class="card-title" style="font-size: 3rem;">You have been logged out!</h5>
     
-        <br><a href="{% url 'login' %}" class="btn btn-primary">Sign in again</a>
+        <br><a href="{% url 'login' %}" style="font-size: 2rem;" class="btn btn-lg btn-outline-dark p-5">Sign in again</a>
         </div>
     </div>
 </center>

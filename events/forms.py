@@ -23,7 +23,7 @@ class CreateEventForm(forms.ModelForm):
                   ]
         exclude = ['users',"created_by"]
         widgets = {
-            'social_club': forms.Select(attrs={'class': 'form-control'}),
+            'social_club': forms.Select(attrs={'class': 'form-control form-control-lg','style':"font-size:2rem;"}),
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
             'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Location'}),

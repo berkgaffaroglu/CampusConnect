@@ -2,39 +2,63 @@
 {% block title %}Profile Page{% endblock title %}
 {% block content %}
 {%if query_club%}
-    <a href="{% url 'club-detail' pk=query_club.pk %}" class="btn btn-lg btn-primary mb-3 p-3"><i class="fa-solid fa-arrow-left"></i> Go Back To The Club</a>
+    
 {% endif %}
 
     
-    {% if request.user.is_staff and not current_profile.is_staff %}
-   
-    <div class="auth mb-5 mt-5 p-3 justify-content-center">
-        <h1><b>Authorization:</b></h1>
+
+
+
+            
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+<div class="card">
+
+        <div class="card-body p-5" style="font-size: 2rem !important; padding: 50px !important;">
+            {% if query_club %}
+            <a href="{% url 'club-detail' pk=query_club.pk %}" style="width: 100px; font-size: 2rem;" class="btn btn-lg btn-light mb-3 p-3"><i class="fa-solid fa-arrow-left"></i></a>
+            {% endif %}
         {% if current_profile.is_active %}
             <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="club_pk" {% if query_club %} value="{{query_club.pk}}" {% endif %}>
-            <button type="submit" name="ban" class="btn btn-danger mb-2 p-3"  >
-                <i class="fa-solid fa-x"></i> Ban {{current_profile.username}}
+            {% if request.user.is_staff and not current_profile.is_staff %}
+            <button type="submit" name="ban" class="btn btn-light mb-2 p-3"  style="font-size: 2rem;">
+                <i class="fa-solid fa-x"></i> Ban  {{current_profile.username}}
             </button>
+            {% endif %}
             </form>
         {% else %}
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="club_pk" {% if query_club %} value="{{query_club.pk}}" {% endif %}>
-                <button type="submit" name="unban" class="btn btn-success mb-2 p-3" >
+                <button type="submit" name="unban" class="btn btn-light mb-2 p-3" style="font-size: 2rem;" >
                 <p style="text-align: left; display: inline-block;"><i class="fa-solid fa-check"></i> Unban {{current_profile.username}}
             </button>
         </form>
-            
         {% endif %}
-    {% endif %}
-    {% if request.user.is_staff and not current_profile.is_staff %}
+
+
+        {% if request.user.is_staff and not current_profile.is_staff %}
 
         {% if current_profile.profile.ambassador %}
             <form method="POST">
             {% csrf_token %}
-            <button type="submit" name="unauth" class="btn btn-danger mb-2 p-3" > 
+            <button type="submit" name="unauth" class="btn btn-light mb-2 p-3" style="font-size: 2rem;"> 
                 <input type="hidden" name="club_pk" {% if query_club %} value="{{query_club.pk}}" {% endif %}>
                 <i class="fa-solid fa-x"></i> Unassign Ambassador
             </button>
@@ -43,25 +67,26 @@
                 
             <form method="POST">
                 {% csrf_token %}
-                <button type="submit" name="auth" class="btn btn-success mb-2 p-3" >
+                <button type="submit" name="auth" class="btn btn-light mb-2 p-3" style="font-size: 2rem;">
                     <input type="hidden" name="club_pk" {% if query_club %} value="{{query_club.pk}}" {% endif %}>
                 <i class="fa-solid fa-check"></i> Assign Ambassador
             </button>
         </form>
               
         {% endif %}
-{% endif %}
+        {% endif %}
 
 
-{% if not current_profile.is_staff and not current_profile == request.user%}
+                
+        {% if not current_profile.is_staff and not current_profile == request.user%}
 
         {% if query_club %}
-     
+
             {% if is_manager_of_query_club == True %}
                 
                 <form method="POST">
                     {% csrf_token %}
-                    <button type="submit" name="unassign" class="btn btn-lg btn-danger mb-2 p-3" ">
+                    <button type="submit" name="unassign" class="btn btn-lg btn-light mb-2 p-3" style="font-size: 2rem;" >
                         <input type="hidden" name="club_pk" value="{{query_club.pk}}">
                         <i class="fa-solid fa-x"></i> Unassign Manager For {{query_club.name}}
                     </button>
@@ -69,55 +94,42 @@
             {% else %}
             <form method="POST">
                 {% csrf_token %}
-                <button type="submit" name="assign" class="btn btn-lg  btn-success mb-2 p-3" ">
+                <button type="submit" name="assign" class="btn btn-lg  btn-light mb-2 p-3" style="font-size: 2rem;">
                     <input type="hidden" name="club_pk" value="{{query_club.pk}}">
                 <i class="fa-solid fa-check"></i> Assign Manager For {{query_club.name}}
                 </button>
             </form>
             {% endif %}
         {% endif %}
-    </div>
-{% endif %}
-
-
-<h1>Profile of: <span class="text-danger">{{current_profile.username}}</span></h1>
-    
-    {% if can_change %}
-    <a href="{% url 'edit-profile' pk=current_profile.pk %}" class="btn btn-primary btn-lg">Edit Profile</a>
-    {% endif %}
+        
+        {% endif %}
 
 
 
-<hr />
-
-<ul class="nav nav-tabs" style="font-size: 1.8rem;">
-    <li class="nav-item ">
-        <a href="#1" class="nav-link {% if not request.GET.page %}active{% endif %}" role="tab" data-toggle="tab"><b>Profile</b></a>
-    </li>
-
-    <li class="nav-item">
-        <a href="#2" class="nav-link {% if request.GET.page %}active{% endif%}" role="tab" data-toggle="tab"><b>Attending Events</b></a>
-    </li>
 
 
-</ul>
 
-<div class="tab-content">
-    
-    <div role="tabpanel" class="tab-pane {% if not request.GET.page %} active {% endif %} card " id="1" style="font-size: 1.7rem;">
 
-        <div class="card-body p-5">
-    
             <div class="col-md-5">
                 <img class="rounded-circle account-img mb-3" data-toggle="tooltip" data-placement="right" width="100px"
                     title='Profile picture of "{{current_profile.username}}"' height="100px"
                     src="{{ current_profile.profile.avatar.url }} " />
             </div>
-    
+            <div class="col-md-5">
+            {% if can_change %}
+            <a href="{% url 'edit-profile' pk=current_profile.pk %}" style="margin-left:20px; font-size: 3rem;" class="btn btn-light btn-lg"><i class="fa-solid fa-pen-to-square"></i></a>
+            {% endif %}
+        </div><hr />
+            <div class="col-md-5 ">
+                <label> <b>
+                    <h3>Username:</h3>
+                </b> <label> 
+                <p>{{current_profile.username}}</p>
+            </div>
             <hr />
             <div class="col-md-5 ">
                 <label> <b>
-                    <h3>Full Name:</h3>
+                    <h3>Name:</h3>
                 </b> <label> 
                 <p>{{ current_profile.first_name }} {{current_profile.last_name}}</p>
             </div>
@@ -159,39 +171,7 @@
                 {{current_profile.username | title}} hasn't joined any social clubs yet.
                 {%endif%}
             </div>
-            
-            
-    
-    
-            
-            
-            <div class="col-md-5 mb-2">
-                <hr/>
-   
-                    {%csrf_token%}
-                    <h2>Liked Events:</h2>
-                <a class="btn btn-lg btn-outline-primary" href="{% url 'liked-events' pk=current_profile.pk %}">Liked Events</a>
-   
-                </div>
-            
-            {% if current_profile.pk == request.user.pk %}
-            <div class="col-md-5 mb-2">
-                <hr/>
-   
-                    {%csrf_token%}
-                    <h2>Dont Recommend Events:</h2>
-                <a class="btn btn-lg btn-outline-primary" href="{% url 'dont-recommend-events' pk=current_profile.pk %}">Dont Recommend Events</a>
-   
-                </div>
-            {% endif%}
-    
-    
         </div>
-    </div>
-    <div role="tabpanel" class="tab-pane {% if request.GET.page %} active {% endif %}" id="2">
-        {% include 'events/partials/events.html' with exclude=exclude events_page=True current_users_page=True%}
-
-    </div>
 </div>
   
 

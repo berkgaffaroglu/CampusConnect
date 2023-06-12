@@ -1,3 +1,6 @@
+{% load custom_filters %}
+{% load static %}
+
 <!doctype html>
 <html lang="en" style="font-size: 10px;">
 
@@ -11,6 +14,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events.css' %}">
+    <link rel="stylesheet" href="{% static 'css/social_clubs.css' %}">
   <!--Font awesome icons -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -21,128 +27,208 @@
   
 
   <title>{% block title %} {% endblock %} </title>
-  <style>
-    .auth form button {
-      font-size: 1.5rem;
-    }
-.tooltip {
-  font-size: 1.3rem;
-}
-  </style>
+
 </head>
 
-<body style="">
+<body>
+  {% if user.is_authenticated %}
+  <nav class="sidebar close" style="z-index: 99999900000;">
+    <header>
+        <div class="image-text">
+            <span class="image">
+                <!--<img src="logo.png" alt="">-->
+            </span>
 
+            <div class="text logo-text">
 
+                <img class="rounded-circle account-img mt-3" width="50px" height="50px"
+                  src="{{ request.user.profile.avatar.url }} " style="cursor: pointer;" />
 
-
-  <nav class="navbar navbar-expand-md navbar-dark bg-info "
-    style="background-color: #f0f5f5; font-size: 1.75rem; padding-left:15%; padding-right: 15%; padding-bottom: 1%; padding-top: 1%; max-height: max-content;">
-    <a href="/events" class="navbar-brand"><img src="/media/logo.png" width="200px" height="95px" alt="">
-      
-
-    </a>
-    {% if user.is_authenticated %}
-    <a href="/social-clubs" class="nav-link nav-item text-light d-none d-md-flex mt-0">
-      <b> <i class="fa-solid fa-people-group"></i> Social Clubs</b>
-    </a>
-    {% if request.user.is_staff %}
-      <a href="/users" class="nav-link nav-item text-light d-none d-md-flex mt-0">
-        <b> <i class="fa-solid fa-user-group"></i> Users <span class="text-danger">(Admin Only)</span></b>
-      </a>
-    {% endif %}
-
-    
-    
-    {% endif %}
-
-
-
-
-    
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-      <i class="fa-solid fa-bars " style="font-size: 30px;"></i>
-    </button>
-    
-    <div class="collapse navbar-collapse " id="navbarCollapse">
-      
-      <div class="navbar-nav ml-auto" style="margin-right: 6%;">
-        
-
-        {% if user.is_authenticated %}
-        <!-- This part dissapears when mobile -->
-        
-
-
-        
-        <div class="dropdown d-none d-md-block" >
-          <a href="#" id="imageDropdown" data-toggle="dropdown">
-            <img class="rounded-circle account-img " style="border:4px solid white;" width="60px"
-                 height="60px"
-                  src="{{ request.user.profile.avatar.url }} " />
-          </a>
-          
-
-          <ul class="dropdown-menu p-0"  role="menu" aria-labelledby="imageDropdown">
-            
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" style="font-size: 15px;" href="{% url 'notification' %}"><b><i class="fa-solid fa-bell"></i> Notifications ({{request.user.profile.new_notification_count}})</b></a>
-            <a class="dropdown-item btn-lg btn-block btn-outline-primary" style="font-size: 15px;"  href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
-            <a class="dropdown-item btn btn-lg btn-block btn-outline-primary" style="font-size: 15px;" data-toggle="modal" data-target="#logoutModalCenter"><b><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</b></a>
-
-            
-          </ul>
-
-        </div>
-
-        
-        <!-- This part shows on mobile -->
-        <ul class="d-md-none">
-          <a href="/social-clubs" class="nav-link nav-item text-white"><b> <i class="fa-solid fa-people-group"></i> Social Clubs</b></a>
-          {% if request.user.is_staff %}
-          <a class="nav-link nav-item text-white" href="{% url 'users' %}"><b><i class="fa-solid fa-user"></i> Users <span class="text-danger">(Admin Only)</span></b></a>
-          {% endif %}
-          <hr style="background-color:white;">
-          <a class="nav-link nav-item text-white" href="#"><b><i class="fa-solid fa-bell"></i> Notifications ({{request.user.profile.new_notification_count}})</b></a>
-          <a class="nav-link nav-item text-white" href="{% url 'users-profile' pk=request.user.pk %}"><b><i class="fa-solid fa-user"></i> Profile</b></a>
-          
-          <hr style="background-color:white;">
-          <a class="nav-link nav-item text-white" href="#" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa-solid fa-arrow-right-from-bracket"></i><b> Logout</b></a>
-        </ul>
-
-        
-
-
-
-        <div class="modal fade" id="logoutModalCenter" tabindex="-1" role="dialog" aria-labelledby="logoutModalCenter"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                Do you want to log out?
-              </div>
-              <div class="modal-footer">
-                <a href="{% url 'logout' %}" class="btn btn btn-danger">Logout</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
-                  Close</button>
-
-              </div>
+                <span class="name">{{request.user.username}}</span>
+                <span class="profession">{% if request.user.profile.ambassador %}Ambassador{% elif request.user.is_staff  %}Admin{% elif request.user|is_manager %}Manager{% else %}User{%endif%}</span>
             </div>
-          </div>
         </div>
-        {% else %}
-        <a href="{% url 'login' %}" class="nav-item nav-link"><b>Sign in</b></a>
-        {% endif %}
+        <i class="fa-solid fa-bars toggle"></i>
 
-      </div>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+          
+          <li class="nav-link search-box d-none">
+            <i class="fa-solid fa-magnifying-glass search_button" onclick="" style="color:black; font-size: 30px; "></i>
+            <form class="form-inline ml-3" style="font-size: 1.5rem;" method="GET" action="{% url 'search' %}">
+              <span class="text nav-text">
+              <input name="q" class="form-control form-control-lg p-3" type="search" placeholder="Search.." {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
+            </span>
+            </form> 
+        </li>
+            <ul class="menu-links">
+              
+         
+
+
+              <!-- <li class="nav-link menus-link" onmouseover="if(this.firstChild['href'] === window.location.href){console.log('yes')}else{console.log(this.firstChild)}"> -->
+              <li class="nav-link menus-link" id="home">
+
+                <a href="{% url 'users-home' %}">
+   
+                  <i class="fa-solid fa-house" style="color:black; font-size: 30px;"> </i>
+                    <span class="text nav-text">&nbsp;&nbsp;Home</span>
+                </a>
+            </li>
+                <li class="nav-link menus-link" onmouseover="console.log(this.childNodes)">
+                    <a href="{% url 'events' %}">
+                      <i class="fa-solid fa-calendar-days" style="color:black; font-size: 30px;"> </i>
+                        <span class="text nav-text">&nbsp;&nbsp;Events</span>
+                    </a>
+                </li>
+
+   
+
+                <li class="nav-link menus-link">
+                    <a href="{% url 'social-clubs' %}">
+              
+                      <i class="fa-sharp fa-solid fa-hashtag" style="color:black; font-size: 30px;"></i>
+                        <span class="text nav-text">&nbsp;&nbsp;Social Clubs</span>
+                    </a>
+                </li>
+
+                <li class="nav-link menus-link">
+                  
+                    <a href="{% url 'users-profile' pk=request.user.pk%}">
+                      <i class="fa-solid fa-user" style="color:black; font-size: 30px;"> </i>
+                        <span class="text nav-text">&nbsp;&nbsp;Profile</span>
+                    </a>
+                </li>
+                <div class="dropdown">
+                  
+                <li class="nav-link menus-link menuDropdownButton d-none" id="dropdownMenuButton" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+                  <a href="#">
+                    <i class="fa-solid fa-caret-right dropdown_icon_menu" style="color:black; font-size: 50px;"></i>
+                      <span class="text nav-text">&nbsp;&nbsp;Account</span>
+                  </a>
+              </li>
+                  <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton">
+                    <li class="nav-link menus-link">
+                  
+                      <a href="{% url 'my-events'%}">
+             
+                        <i class="fa-solid fa-calendar" style="color:black; font-size: 30px;"> </i>
+                          <span class="text nav-text">&nbsp;&nbsp;My Events</span>
+                      </a>
+                  </li>
+                  <li class="nav-link menus-link">
+                  
+                    <a href="{% url 'my-clubs'%}">
+    
+                      <i class="fa-sharp fa-solid fa-hashtag" style="color:black; font-size: 30px;"> </i>
+                        <span class="text nav-text">&nbsp;&nbsp;My Clubs</span>
+                    </a>
+                </li>
+                <li class="nav-link menus-link">
+                  
+                  <a href="{% url 'liked-events' pk=request.user.pk %}">
+                    <i class="fa-sharp fa-solid fa-heart" style="color:black; font-size: 30px;"> </i>
+                      <span class="text nav-text">&nbsp;&nbsp;Liked Events</span>
+                  </a>
+              </li>
+              <li class="nav-link menus-link">
+                  
+                <a href="{% url 'dont-recommend-events' pk=request.user.pk %}">
+                  <i class="fa-solid fa-ban" style="color:black; font-size: 30px;"> </i>
+                    <span class="text nav-text">&nbsp;&nbsp;Don't Recommend <br>
+                      &nbsp;&nbsp;Events</span>
+                </a>
+            </li>
+    
+                  </div>
+                </div>
+
+                {% if request.user|is_manager or request.user.is_staff or request.user.profile.ambassador %}
+                <div class="dropdown">
+                  
+                  <li class="nav-link menus-link menuDropdownButton2 d-none" id="dropdownMenuButton" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
+                    <a href="#">
+                      <i class="fa-solid fa-caret-right dropdown_icon_menu2" style="color:black; font-size: 50px;"></i>
+                        <span class="text nav-text">&nbsp;&nbsp;Create</span>
+                    </a>
+                </li>
+                    <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton">
+                      {% if request.user|is_manager or request.user.is_staff %}
+                
+                      <li class="nav-link menus-link">
+                        
+                        <a href="{% url 'create-event'%}">
+                          <i class="fa-solid fa-circle-plus" style="color:black; font-size: 30px;"> </i>
+                            <span class="text nav-text">&nbsp;&nbsp;Create Event</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if request.user.profile.ambassador or request.user.is_staff %}
+                    <li class="nav-link menus-link">
+                        
+                      <a href="{% url 'create-club'%}">
+                        <i class="fa-solid fa-circle-plus" style="color:black; font-size: 30px;"> </i>
+                          <span class="text nav-text">&nbsp;&nbsp;Create Social Club</span>
+                      </a>
+                  </li>
+                  {% endif %}
+      
+          
+      
+                    </div>
+                  </div>
+                  {% endif %}
+                  <li class="nav-link menus-link">
+                        
+                    <a href="{% url 'logout' %}">
+                      <i class="fa-solid fa-right-from-bracket" style="color:black; font-size: 30px;"> </i>
+                        <span class="text nav-text">&nbsp;&nbsp;Logout</span>
+                    </a>
+                </li>
+
+     
+        </div>
     </div>
-  </nav>
-  <!--Any flash messages pop up in any page because this is the base template-->
+
+</nav>
+
+{% endif %}
+
+<nav  class="navbar navbar-expand-lg navbar-{% if user.is_authenticated %}dark{%else%}light{%endif%} bg-{% if user.is_authenticated %}light{%else%}dark p-3{%endif%}">
+ 
+  
+  
+
+
+
+    <ul class="navbar-nav ml-auto" style="margin-right: 10%;">
+      
+      {% if user.is_authenticated %}
+ 
+      <ul class="notification-drop" style="z-index: 9999999999999;">
+        <li class="item">
+          <i class="fa fa-bell-o notification-bell" aria-hidden="true"></i> <span class="btn__badge {% if request.user.profile.new_notification_count > 0 %}pulse-button{% endif %} ">{{request.user.profile.new_notification_count}}</span>     
+          <ul>
+            {% for notification in request.user.notifications.all|sort_and_slice:request.user.profile.new_notification_count %}
+            <a style="text-decoration: none; color: black;" href="{% if notification.url %}{{notification.url}}?clear_notification=true{% else %}{% url 'notification' %}{% endif %}"><li> {{notification.title}}</li></a>
+            {% endfor %}
+            <a style="text-decoration: none;" href="{% url 'notification' %}"><li>See All</li></a>
+          </ul>
+        </li>
+        
+      </ul>
+      {% else %}
+      <a href="{% url 'login' %}" class="nav-link text-light" style="font-size: 2.5rem;"></i> Login</a>
+      <a href="{% url 'users-register' %}" class="nav-link ml-5 text-light" style="font-size: 2.5rem;"></i> Sign Up</a>
+
+      {% endif %}
+
+    
+    </ul>
+</nav>
+
 
 
 
@@ -150,10 +236,10 @@
     {% if messages %}
 
     {% for message in messages %}
-    <div style="font-size:1.5rem;"
+    <div style="font-size:2rem; padding: 30px;"
       class="alert alert-{{ message.tags }} {% if message.tags == 'error' %} alert-danger{% endif %} alert-dismissible mb-3"
       role="alert">{{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <button type="button" style="font-size:4rem;" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -161,13 +247,12 @@
   
   
     {% endif %}
+
     {% block content %}{% endblock %}
   </div>
 
 
-  <div class="bg-info text-center text-light p-3" style="font-size:1.5rem;">
-    <p style="color:white"><b> © 2023 Copyright: Berk Hüseyin Gaffaroğlu </b></p>
-  </div>
+
 
 
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -200,7 +285,18 @@
   }
   }
   
-  
+  var menus_links = document.getElementsByClassName('menus-link')
+  var linksArray = Array.from(menus_links);
+
+  for(var menu_link of linksArray){
+    var link = menu_link.childNodes[1]['href']
+    if (link.split('/').pop()!=='#'){
+      if (window.location.href == link){
+        menu_link.className = menu_link.className + ' active-menus-link'
+      }
+    }
+
+  }
     function previewImages() {  
       var preview = document.querySelector('#image-preview');
       if (this.files) {
@@ -277,20 +373,81 @@
     })
 
     function toggle_comment_edit(comment_pk){
-        var comment_div = document.querySelector('.comment[id="' + comment_pk + '"]');
+        var comment = document.querySelector('.comment[id="' + comment_pk + '"]');
         var edit_comment_form = document.querySelector('.comment-edit[id="' + comment_pk + '"]');
-        var edit_comment_button = document.querySelector('.comment-edit-button[id="' + comment_pk + '"]');
-
+        console.log(edit_comment_form)
+        console.log(comment)
         if(edit_comment_form.style.display === "none"){
-          comment_div.style.display = "none";
-          edit_comment_button.innerHTML = "<i class='fa-solid fa-x'></i> Close Editing";
-          edit_comment_form.style.display = "block";
+          comment.style.display = "none";
+          edit_comment_form.style.display = "flex";
+          
         } else {
-          comment_div.style.display = "block";
-          edit_comment_button.innerHTML = '<i class="fa-solid fa-pen-to-square" ></i> Edit Comment';
+          comment.style.display = "";
+          edit_comment_form.className = edit_comment_form.className.replace('d-flex','')
           edit_comment_form.style.display = "none";
         }
 }
+
+  function toggleDescription (event_pk){
+    var short_description = document.getElementById('short_'+event_pk);
+    var long_description = document.getElementById('long_'+event_pk)
+    
+    long_description.style = "";
+    short_description.style.display = "none";
+
+  }
+
+  function toggleReply (comment_pk){
+    var reply_form = document.getElementById('reply_form_'+comment_pk);
+    reply_form.style = ""
+  }
+  const body = document.querySelector('body'),
+    sidebar = body.querySelector('nav'),
+    toggle = body.querySelector(".toggle"),
+    searchBox = body.querySelector(".search-box"),
+    menuIcon = body.querySelector(".dropdown_icon_menu")
+    menuIcon2 = body.querySelector(".dropdown_icon_menu2")
+    menuDropdownButton =  body.querySelector(".menuDropdownButton")
+    menuDropdownButton2 =  body.querySelector(".menuDropdownButton2")
+    
+    modeSwitch = body.querySelector(".toggle-switch"),
+    modeText = body.querySelector(".mode-text");
+
+
+toggle.addEventListener("click", () => {
+    sidebar.classList.toggle("close");
+    menuDropdownButton.classList.toggle("d-none");
+    try{menuDropdownButton2.classList.toggle("d-none");}catch{}
+    
+    searchBox.classList.toggle("d-none");
+})
+menuDropdownButton.addEventListener("click", () => {
+  if (menuDropdownButton.getAttribute("aria-expanded") === "true") {
+    menuIcon.className = menuIcon.className.replace('caret-down', 'caret-right');
+  
+} else if (menuDropdownButton.getAttribute("aria-expanded") === "false") {
+  menuIcon.className = menuIcon.className.replace('caret-right', 'caret-down');
+}})
+try {
+menuDropdownButton2.addEventListener("click", () => {
+  if (menuDropdownButton2.getAttribute("aria-expanded") === "true") {
+    menuIcon2.className = menuIcon2.className.replace('caret-down', 'caret-right');
+  
+} else if (menuDropdownButton2.getAttribute("aria-expanded") === "false") {
+  menuIcon2.className = menuIcon2.className.replace('caret-right', 'caret-down');
+}
+}
+)
+} catch{}
+
+
+
+
+$(document).ready(function() {
+  $(".notification-drop .item").on('click',function() {
+    $(this).find('ul').toggle();
+  });
+});
 
 
   </script>

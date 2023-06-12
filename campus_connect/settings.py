@@ -34,7 +34,7 @@ URL = "http://127.0.0.1:8000"
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     'events.apps.EventsConfig',
     'social_clubs.apps.SocialClubsConfig',
     'social_django',
+    'django_extensions'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +84,10 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
+            'libraries':{
+            'custom_filters': 'events.custom_filters',
+            
+            }
          
         },
     },
@@ -146,6 +152,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    "/var/www/static/",
+]
+
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -177,3 +189,9 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GRAPH_MODELS = {
+    'all_applications': False,
+  'group_models': False,
+  'app_labels': ["users"],
+}

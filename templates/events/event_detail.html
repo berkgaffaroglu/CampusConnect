@@ -4,8 +4,8 @@
 {% block content %}
 
 
-<div class="mt-3">
-
+<center>
+<div class="card event-detail-card mb-0" style="margin-bottom: 0;">
   <a 
   
   {% if request.GET.l == "true" %}
@@ -18,123 +18,147 @@
 
   
   
-  class="btn btn-lg btn-primary mb-3 p-3"><i class="fa-solid fa-arrow-left"></i> Go Back To The Events</a><br/>
-
-  {% if user.is_authenticated %}
-
-          {% if event.is_past %}
-          <button class="btn btn-secondary btn-lg mb-2" disabled>
-            <i class="fa-solid fa-check"></i> Event Time Has Passed
-          </button>
-
-          {% elif is_attending %}
-          <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="unattend" class="btn btn-lg btn-danger mb-2 p-3">
-              <i class="fa-solid fa-x"></i> Unattend
-            </button>
-          </form>
-
-          {% elif event.users.all|length >= event.maximum_people %}
-          <button class="btn btn-lg btn-danger mb-2 p-3" disabled>
-            <i class="fa-solid fa-check"></i> This Event Is Full!
-          </button>
-
-          {% else %}
-          <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="attend" class="btn btn-lg btn-success mb-2 p-3w">
-              <i class="fa-solid fa-check"></i> Attend
-            </button>
-          </form>
-
-          {% endif %}
-  {% endif %}
-</div>
-
-
-<div class="card " style="font-size:1.35rem; background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
-
-  <div class="card-body">
+  class="btn btn-lg btn-light mb-3 p-3" style="width: 100px; font-size: 2rem;"><i class="fa-solid fa-arrow-left"></i></a>
+  <br>
+  <div class="card-body d-flex flex-row align-middle" style="align-items: center;">
     
-    <h1><b>Event: {{event.title|title}}</b>&nbsp;
-      <form style="display: inline;" method="POST">
-        {% csrf_token %}
-        
-        <button class="btn btn-lg btn-danger" name="like" style="font-size: 1.5rem; border-radius: 30px;">
-<i class="fa{% if not is_liked %}-solid{%else%}-regular{% endif %} fa-heart"></i> {{event.likes_event.all|length}} Likes</button>
-        </form>
-      </h1> 
-          
-    <small>{{event.created_time|date:"d/m/Y H:i"}}</small> 
+    <a class="text-dark" href="{% url 'users-profile' pk=event.created_by.pk %}"><img src="{{event.created_by.profile.avatar.url}}" class="rounded-circle ml-0" height="75px"
+      width="75px" alt="avatar" /></a>
+    <div class="ml-4">
+      <h1 class="card-title font-weight-bold mb-2 text-left" style="vertical-align: middle !important; display: inline-block;"><a class="text-dark" href="{% url 'users-profile' pk=event.created_by.pk %}">{{event.created_by.username}}</a></h3> | <h1 style="display: inline-block;">{{event.title}}</h1>
+      
+    </div>
+    {% if user.is_authenticated %}
+    <div class="navbar-nav ml-auto">
+    <li class="nav-item dropdown">
 
-
-    <center>
-      <div id="carouselExampleControls" data-ride="carousel" style="width: 50%;" class="carousel slide bg-dark p-5 mb-5 mt-2">
-        <div class="carousel-inner ">
-         {% if images %}
-          {% for image in images %}
-
-          <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
-
-            <img class="img-fluid" src="{{ image.image.url }}">
-
-          </div>
-
-          {% endfor %}
+      <ul class="notification-drop">
+        <li class="item">
+          <i class="fa-solid fa-ellipsis" style="font-size: 3rem;"></i>
+          <ul>
+            {% if can_change %}
+            <a style="text-decoration: none; color: black;" href="{% url 'edit-event' pk=event.pk %}"><li style="text-decoration: none; font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Edit</li></a>
+            
+            <a style="text-decoration: none; color: black; " href="{% url 'delete-event' pk=event.pk %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Delete</li></a>
+            {% endif %}
+            {% if not event in request.user.profile.dont_recommend_events.all %}
+            <a style="text-decoration: none; color: black; " href="{% url 'toggle-recommend-event' pk=event.pk detail='true' %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Don't Recommend</li></a>
           {% else %}
-          <div class="carousel-item active">
+          <a style="text-decoration: none; color: black; " href="{% url 'toggle-recommend-event' pk=event.pk detail='true' %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Recommend</li></a>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </li>
+    </div>
+    {% endif %}
+  </div>
+<!--   
+  <div class="event-image hover-overlay ripple rounded-0 w-100" data-mdb-ripple-color="light">
+    <img class="img-fluid" src="
+    {% if event.event_images.all.first %}
+      {{ event.event_images.all.first.image.url}}
+    {% else %}
+      /media/event_images/default.png
+    {% endif %}"
+      alt="Card image cap" />
+    <a href="#!">
+      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+    </a>
+  </div> -->
+<center>
+  <div id="carouselExampleControls" data-ride="carousel" class="carousel slide p-2  hover-overlay ripple rounded-0 w-100">
+    <div class="carousel-inner ">
+     {% if images %}
+      {% for image in images %}
 
-            <img class="img-fluid" src="/media/event_images/default.PNG" >
-          </div>
-          {% endif%}
+      <div class="carousel-item  {% if forloop.counter == 1 %} active {% endif %}">
 
+        <img class="img-fluid" src="{{ image.image.url }}">
 
-
-        </div>
-        
-        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
       </div>
 
-    </center>
-    <p class="card-text"><b>Description:</b> {{event.description}}</p>
-    <hr />
-    <p class="card-text"><b>Location:</b> {{event.location}}</p>
-    <hr />
-    <p class="card-text"><b>Time:</b> {{event.time|date:"j/m/Y l H:i" }}</p>
-    <hr />
-    <p class="card-text"><b>Maximum People:</b> {{event.maximum_people}}</p>
-    <hr />
-    <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
-    <hr />
+      {% endfor %}
+      {% else %}
+      <div class="carousel-item active">
 
-    <p class="card-text"><b>Event By:</b>
-      {% if event.social_club %}
-      <a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club.name|title}}</a>
-    </p>
-    {% else %}
-    Independent
-    {% endif %}
-    <hr />
-    <p class="card-text"><b>Created by:</b></p>
-    <a href="{% url 'users-profile' pk=event.created_by.pk %}">
-      <img class="rounded-circle account-img" {% if event.created_by == user %}
-      {% if not event.created_by.is_active %}
-          style="border:6px solid #DC4C64;" title="{{user_.username}} is banned!" {% else%}
-        title="{{event.created_by}} created this event!" {% endif %} data-toggle="tooltip" data-placement="right"
-        
-        style="border: 4px solid green;" {% endif %} width="60px" height="60px"
-        src="{{ event.created_by.profile.avatar.url }} " style="cursor: pointer;" />
+        <img class="img-fluid" src="/media/event_images/default.PNG" >
+      </div>
+      {% endif%}
+
+
+
+    </div>
+    
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
     </a>
-    <hr />
-    <b>Attendees ({{shortened_attendant_list|length}}/{{event.maximum_people}}): </b>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+
+
+  <div class="card-body">
+
+    <div class="description text-left p-4" style="display: block; font-size: 2rem;">
+      
+      <strong>      <form style="display: inline;" method="POST">
+        {% csrf_token %}
+        
+        <button class="btn btn-lg" name="like" style="font-size: 3rem; border-radius: 30px; {% if not is_liked %}color: red;{%endif%} ">
+<i class="fa{% if not is_liked %}-solid{%else%}-regular{% endif %} fa-heart"></i></button>
+        </form>{{event.likes_event.count}} Likes</strong> 
+
+        
+        {% if user.is_authenticated %}
+
+        {% if event.is_past %}
+        <br>
+        <button class="btn btn-lg mb-4" style="font-size: 3rem; border-radius: 30px; {% if not is_liked %}color: black;{%endif%} " disabled>
+          <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Event Time Has Passed</b>
+        {% elif is_attending %}
+        <form method="POST" class="inline">
+          {% csrf_token %}
+          <button class="btn btn-lg mb-4" name="unattend" style="font-size: 3rem; border-radius: 30px; {% if is_attending %}color: red;{%endif%} ">
+            <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Unattend</b>
+        </form>
+
+        {% elif event.users.all|length >= event.maximum_people %}
+        <br>
+        <button class="btn btn-lg mb-4" style="font-size: 3rem; border-radius: 30px; {% if not is_liked %}color: black;{%endif%} " disabled>
+          <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Event Is Full</b>
+        
+
+        {% else %}
+        <form method="POST">
+          {% csrf_token %}
+          <button class="btn btn-lg mb-4" name="attend" style="font-size: 3rem; border-radius: 30px; {% if not is_liked %}color: black;{%endif%} ">
+            <i class="fa{% if not is_attending %}-solid{%else%}-regular{% endif %} fa-calendar-days"></i></button> <b>Attend</b>
+        </form>
+
+        {% endif %}
+{% endif %}
+
+      <p  >
+        
+      <b><a class="text-dark"  href="{% url 'users-profile' pk=event.created_by.pk %}">{{event.created_by}}</a></b> {{event.description}}
+  
+        
+      </p>
+
+      <hr />
+      <p class="card-text"><b>Location:</b> {{event.location}}</p>
+      <hr />
+      <p class="card-text"><b>Club:</b> <a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club}}</a></p>
+      <hr />
+      <p class="card-text"><b>Time:</b> {{event.time|date:"j/m/Y l H:i" }}</p>
+      <hr />
+      <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
+      <hr />
+      <b>Attendees ({{shortened_attendant_list|length}}/{{event.maximum_people}}): </b>
     {% if shortened_attendant_list|length > 0 %}
     <p class="card-text">
 
@@ -152,119 +176,147 @@
     {% else %}
     No one attended this event yet. <br /><br />
     {% endif %}
-
-    {% if can_change %}
-
-    <a type="button" class="btn btn-danger btn-lg float-right" style="color:white" data-toggle="modal"
-      data-target="#eventDeleteModalCenter">
-      <i class="fa-sharp fa-solid fa-trash"></i> Delete This Event
-    </a>
-    <a href="{% url 'edit-event' pk=event.pk %}" class="btn btn-primary btn-lg float-right mr-2" style="color:white">
-      <i class="fa-solid fa-pen-to-square"></i> Edit This Event
-    </a>
-
-    <div class="modal fade" id="eventDeleteModalCenter" tabindex="-1" role="dialog"
-      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Do you want to delete this event?
-          </div>
-          <div class="modal-footer">
-
-            <form method="POST" action="{% url 'delete-event' pk=event.pk %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn btn-danger"><i class="fa-sharp fa-solid fa-trash"></i>
-                Delete</button>
-            </form>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa-solid fa-x"></i>
-              Close</button>
-
-          </div>
-        </div>
+    
+     <hr>
+     <br>
+     <h2 style="font-size: 2rem;"><b><i class="fa-regular fa-comment"></i> Comments</p></h2></b>
+     <form method="POST" style="align-items: center;" class="d-flex">
+      {% csrf_token %}
+      <div class="flex-grow-1 w-100">
+        <textarea name="comment" class="form-control mb-3" style="height: 100px; font-size: 1.5rem;" type="text" required></textarea>
       </div>
-    </div>
+      <button type="submit" class="btn btn-lg btn-light ml-3 " style="font-size: 2rem; width: 100px; height: 100px;">
+        <i class="fa-solid fa-check"></i>
+      </button>
+    </form>
 
-    {% endif %}
-  </div>
-
-</div>
-
-<div class="comments-section mt-5">
-  <h1>Comments ({{comments|length}})</h1>
-  <hr/>
-
-  <div class="create-comment card mt-3 mb-3" style="background-color: #f3f3f3; border: 4px solid #cfcfcf; border-radius: 1%;">
-      <div class="card-body">
-        <h3>Share your thoughts:</h3>
-        <form method="POST">
+<div class="comments ">
+  
+{% if comments %}
+{% for comment in comments %}
+{% if comment.reply_to == None %}
+    <div class="comment-container p-3 text-left mt-3" style="margin-bottom: 20px;">
+        
+              <div class="comment-wrapper" style="margin-bottom: 20px;">
+               
+               
+        <a class="text-dark" href="{% url 'users-profile' pk=comment.commentor.pk %}"><img src="{{comment.commentor.profile.avatar.url}}" class="rounded-circle ml-0" height="50px"
+        width="50px" alt="avatar" /></a> <b>{{comment.commentor}}</b> &nbsp;  <span class="comment" id="{{comment.pk}}">{{ comment.comment }}</span>
+        <form method="POST" style="align-items: center; display: none !important;" class="comment-edit mt-5 d-flex" id="{{comment.pk}}">
           {% csrf_token %}
-          <textarea name="comment" class="form-control w-50 mb-3" style="height: 60px; font-size: 1.5rem;" type="text"></textarea>
-          <button type="submit" class="btn btn-lg btn-success">
-            Comment
+          <div class="flex-grow-1 w-100">
+            <input type="hidden" name="comment_pk" value="{{comment.pk}}">
+            <textarea name="edit_comment" class="form-control mb-3" style="height: 100px; font-size: 1.5rem;" type="text" required>{{comment.comment}}</textarea>
+          </div>
+          <button type="submit" class="btn btn-lg btn-light ml-3 " style="font-size: 2rem; width: 100px; height: 100px;">
+            <i class="fa-solid fa-check"></i>
+          </button>
+        </form>
+     <br>
+     
+     <hr>
+     <span style="margin-left: 50px;"><a onclick="toggleReply({{comment.pk}})" class="click-reply" ><b>Reply</b></a></span>
+     {% if comment.commentor == request.user %}
+     
+     
+       <span style="margin-left: 10px;"><a onclick="toggle_comment_edit({{comment.pk}})" class="click-reply" ><b>Edit</b></a></span>
+       <span style="margin-left: 10px;"><a href="{% url 'delete-comment' pk=comment.pk %}" class="click-reply" ><b>Delete</b></a></span>
+
+       {% endif %}
+        </div>
+        
+
+          {% for reply in comment.reply_comments.all %}
+          <div class="reply" style="margin-bottom: 20px; margin-left: 50px;">
+            <a class="text-dark" href="{% url 'users-profile' pk=reply.commentor.pk %}"><img src="{{reply.commentor.profile.avatar.url}}" class="rounded-circle ml-0" height="50px"
+            width="50px" alt="avatar" /></a> <b>{{reply.commentor}}</b> &nbsp; <span class="comment" id="{{reply.pk}}">{{ reply.comment }}</span>
+            <form method="POST" style="align-items: center; display: none !important;" class="comment-edit mt-5 d-flex" id="{{reply.pk}}">
+              {% csrf_token %}
+              <div class="flex-grow-1 w-100">
+                <input type="hidden" name="comment_pk" value="{{reply.pk}}">
+                <textarea name="edit_comment" class="form-control mb-3" style="height: 100px; font-size: 1.5rem;" type="text" required>{{reply.comment}}</textarea>
+              </div>
+              <button type="submit" class="btn btn-lg btn-light ml-3 " style="font-size: 2rem; width: 100px; height: 100px;">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </form>
+            <br>
+            {% if comment.commentor == request.user %}
+            <hr>
+            <span style="margin-left: 10px;"><a onclick="toggle_comment_edit({{reply.pk}})" class="click-reply" ><b>Edit</b></a></span>
+            <span style="margin-left: 10px;"><a href="{% url 'delete-comment' pk=reply.pk %}" class="click-reply" ><b>Delete</b></a></span>
+            {% endif %}
+            </div>
+          
+          {% endfor %}
+
+
+        
+        <form method="POST" id="reply_form_{{comment.pk}}" style="align-items: center; display: none !important;" class="d-flex">
+          {% csrf_token %}
+          <div class="flex-grow-1 w-100">
+            <input type="hidden" name="reply_to" value="{{comment.pk}}"/>
+            <textarea name="reply" class="form-control mb-3" style="height: 100px; font-size: 1.5rem;" type="text" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-lg btn-light ml-3 " style="font-size: 2rem; width: 100px; height: 100px;">
+            <i class="fa-solid fa-check"></i>
           </button>
         </form>
       </div>
-  </div>
+      {%endif%}
 
-  {% if comments %}
-  <div class="comment_container mb-5">
-    {% for comment in comments %}
-        {% include 'events/partials/comment_section.html' with comment=comment %}
-    {% endfor %}
-  </div>
-  
+   
+{% endfor %}
 
 
 
-  <nav class="text-center" style="font-size: 1.5rem;">
-    <ul class="pagination justify-content-center">
-
-      {% if comments.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Previous</a></li>
-      {% else %}
-      <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-      {% endif %}
 
 
+<nav class="text-center">
+<ul class="pagination justify-content-center mt-5" style="font-size: 1.5rem !important;">
 
-      {% for num in comments.paginator.page_range %}
-      {% if num == comments.number %}
-      <li class="page-item active">
-        <a class="page-link" href="?page={{ num }}">{{ num }} <span class="sr-only">(current)</span></a>
-      </li>
-      {% elif num > comments.number|add:-5 and num < comments.number|add:5 %} <li class="page-item">
-        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
+ {% if comments.has_previous %}
+ <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Previous</a></li>
+ {% else %}
+ <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+ {% endif %}
 
 
 
-        {% if comments.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
-        {% else %}
-        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-        {% endif %}
+ {% for num in comments.paginator.page_range %}
+ {% if num == comments.number %}
+ <li class="page-item active">
+   <a class="page-link" href="?page={{ num }}">{{ num }} <span class="sr-only">(current)</span></a>
+ </li>
+ {% elif num > comments.number|add:-5 and num < comments.number|add:5 %} <li class="page-item">
+   <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+   </li>
+   {% endif %}
+   {% endfor %}
 
 
-    </ul>
+
+   {% if comments.has_next %}
+   <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
+   {% else %}
+   <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+   {% endif %}
+
+
+</ul>
+
+</nav>
+</div>
+
+{% endif %}
+    </div>
     
-  </nav>
-    
-    {% else %}
-    <h3>No comments yet.</h3>
-    {% endif %}
 
 
+  </div>
+</div>
 
 
-
+</center>
 
 {% endblock content %}

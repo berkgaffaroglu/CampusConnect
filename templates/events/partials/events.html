@@ -1,129 +1,91 @@
+
+{% load custom_filters %}
 {% block content %}
 
 {% if events %}
+<div class="event-container " style="margin-top: 2rem;">
 <center>
 {% for event in events %}
 
-<div class="card mb-5 p-5" style="font-size: 1.75rem; background-color: #f3f3f3; max-width: 500px; border: 8px solid #cfcfcf; border-radius: 1%;">
- 
-  <div class="card-body">
-    {% if not search and not current_users_page and not dont_recommend_events %}
-        <div class="mb-1 text-right">
-          <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="event_pk" value="{{event.pk}}">
-            <button type="submit" name="dont_recommend" data-placement="left" title="Don't recommend this event in event feed." data-toggle="tooltip" style="font-size: 1rem; width: 30px;" class="btn btn-danger p-3 mb-3 align-middle"><i class="fa-solid fa-x"></i></button>
-          </form>
-        </div>
-        
- 
+<div class="card event-card mb-5 mt-5">
+
+  <div class="card-body d-flex flex-row align-middle" style="align-items: center;">
+    
+    <a class="text-dark" href="{% url 'users-profile' pk=event.created_by.pk %}"><img src="{{event.created_by.profile.avatar.url}}" class="rounded-circle ml-0" height="75px"
+      width="75px" alt="avatar" /></a>
+    <div class="ml-4" style="font-size: 2rem;">
+      <h1 class="card-title font-weight-bold mb-2 text-left" style="vertical-align: middle !important; display: inline-block;"><a class="text-dark" href="{% url 'users-profile' pk=event.created_by.pk %}">{{event.created_by.username}}</a></h3> | <h1 style="display: inline-block;">{{event.title}}</h1>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="navbar-nav ml-auto">
+    <li class="nav-item dropdown">
+  
+      <ul class="notification-drop">
+        <li class="item">
+          <i class="fa-solid fa-ellipsis" style="font-size: 3rem;"></i>
+          <ul>
+            {% if request.user in event.social_club.managers.all or request.user.is_staff %}
+            <a style="text-decoration: none; color: black;" href="{% url 'edit-event' pk=event.pk %}"><li style="text-decoration: none; font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Edit</li></a>
+            
+            <a style="text-decoration: none; color: black; " href="{% url 'delete-event' pk=event.pk %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Delete</li></a>
+            {% endif %}
+
+            {% if not event in request.user.profile.dont_recommend_events.all %}
+              <a style="text-decoration: none; color: black; " href="{% url 'toggle-recommend-event' pk=event.pk detail='false' %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Don't Recommend</li></a>
+            {% else %}
+            <a style="text-decoration: none; color: black; " href="{% url 'toggle-recommend-event' pk=event.pk detail='false' %}"><li style=" text-decoration: none;font-size: 2rem; text-align: center; padding: 15px 15px 15px 25px !important;">Recommend</li></a>
+              {% endif %}
+              
+          </ul>
+        </li>
+      </ul>
+    </li>
+    </div>
     {% endif %}
-
-        
-    {% if dont_recommend_events %}
-      <div class="mb-1 text-right">
-        <form method="POST">
-          {% csrf_token %}
-          <input type="hidden" name="event_pk" value="{{event.pk}}">
-          <button type="submit" name="dont_recommend" data-placement="left" title="Recommend this event in event feed again." data-toggle="tooltip" style="font-size: 1rem; width: 30px;" class="btn btn-success p-3 mb-3 align-middle"><i class="fa-solid fa-check"></i></button>
-        </form>
-      </div>
-    {% endif %}
-    
-    
-    
-
-
-    {% if not 'title' in exclude %}
-    {% for like in event.likes_event.all %}
-      {% if request.user == like.user %}
-      
-      <h1 class="badge badge-danger p-3" data-placement="left" title="You have liked this event." data-toggle="tooltip" style="display: inline-block; border-radius: 100%; vertical-align: middle; font-size: 2rem;"> <i class="fa-solid fa-heart"></i></h1>
-      {% endif %}
-    
-
-      
-    {% endfor %}
-    <a href="{% url 'event-detail' pk=event.pk %}?{% if liked_event %}l=true{%elif dont_recommend_events %}dr=true{% endif %}{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}" class="mb-5">
-    <h1 class="" style="display: inline-block; "><b>{{event.title|title}}</b></h1> 
-    </a> 
-      <h5 class="card-title">
-        
-        
-        
-        <a href="{% url 'event-detail' pk=event.pk %}?{% if liked_event %}l=true{%elif dont_recommend_events %}dr=true{% endif %}{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">
-        <img class="img-fluid mt-4 mb-4" src="
-        {% if event.event_images.all.first %}
-          {{ event.event_images.all.first.image.url}}
-        {% else %}
-          /media/event_images/default.png
-        {% endif %}
-        " height="150px" width="200px" style="border: 2px solid black;"> 
-      </a>
-  <br/>
-
-      
-
-
-<div class="title" style="display: inline-block;">
-  <div class="badge" style="display: block;">
-  {% if event.is_past %}
-
-      <h1 class="badge badge-secondary p-3 mb-3" style="font-size: 1.3rem;" ><i class="fa-solid fa-skull"></i> This is an old event.</h1>
-      {% elif event in events_attending and not current_users_page %}
- 
-      <h1 class="badge badge-success p-3 mb-3 " style="font-size: 1.3rem; "><i class="fa-solid fa-check"></i> You are attending this event.</h1>
-      {% elif event.users.all|length >= event.maximum_people and not current_users_page %}
-   
-      <h1 class="badge badge-danger p-3 mb-3" style="font-size: 1.3rem; "> <i class="fa-solid fa-check"></i></i> Event Is Full</h1>
-      {% endif %}</div>
-
-
-
-
-</div>
-   
-        
-         
-        </h5>
-    
-    {% endif %}
-
-    {% if not 'from' in exclude %}
-    <p class="card-text"><b>From The Club:</b> <b><a href="{% url 'club-detail' pk=event.social_club.pk %}">{{event.social_club}}</a></b></p>
-    
-    {% endif %}
-      
-    {% if not 'description' in exclude %}
-    <p class="card-text"><b>Description:</b> {% if event.description|length > 200 %}
-      {{event.description|slice:200}} <a href="{% url 'event-detail' pk=event.pk %}?{% if liked_event %}l=true{%elif dont_recommend_events %}dr=true{% endif %}{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">...</a> {% else %} {{event.description}} {% endif %}</p>
-    
-    {% endif %}
-
-    {% if not 'location' in exclude %}
-    <p class="card-text"><b>Location:</b> {{event.location}}</p>
-    
-    {% endif %}
-    
-    {% if not 'time' in exclude %}
-    <p class="card-text"><b>Time:</b> {{event.time|date:"j/m/Y l H:i" }}</p>
-    
-    {% endif%}
-    {% if not 'fee' in exclude %}
-    <p class="card-text"><b>Fee:</b> {{event.price}} ₺</p>
-    
-    {% endif %}
-
-    <a href="{% url 'event-detail' pk=event.pk %}?{% if liked_event %}l=true{%elif dont_recommend_events %}dr=true{% endif %}{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}" class="btn btn-primary btn-lg p-3 mt-3 mb-3 " style="width: 50%">Details</a>
   </div>
+  <a href="{% url 'event-detail' pk=event.pk %}">
+  <div class="event-image hover-overlay ripple rounded-0 w-100" data-mdb-ripple-color="light">
+    <img class="img-fluid" src="
+    {% if event.event_images.all.first %}
+      {{ event.event_images.all.first.image.url}}
+    {% else %}
+      /media/event_images/default.png
+    {% endif %}"
+      alt="Card image cap" />
+    <a href="#!">
+      <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+    </a>
+  </div>
+</a>
+  <div class="card-body text-left">
 
+    <div class="description text-left p-4" style="display: inline-block; font-size: 2rem;">
+
+        <a href="{% url 'toggle-like-event' pk=event.pk %}" class="btn btn-lg" name="like" style="text-decoration: none; color:black; font-size: 3rem; border-radius: 30px; {% if not event|is_liked:request.user %}color: red;{% endif %} ">
+        <i class="fa{% if not event|is_liked:request.user %}-solid{%else%}-regular{% endif %} fa-heart"></i></a>
+
+      <strong>{{event.likes_event.count}} Likes</strong> 
+      <p >
+
+        
+      <b><a class="text-dark"  href="{% url 'users-profile' pk=event.created_by.pk %}">{{event.created_by}}</a></b> <span id="short_{{event.pk}}">{{ event.description|slice:70 }} {% if event.description|length > 70 %} <a class="click_more" onclick="toggleDescription({{event.pk}})">more</a>{%endif%}</span>  {% if event.description|length > 70 %} <span id="long_{{event.pk}}" style="display: none;">{{event.description}}</span>{% endif %}
+        
+      </p>
+
+    </div>
+
+  </div>
 </div>
+
+
 
 {% endfor %}
+
 </center>
+</div>
 
 
-<nav class="text-center" style="font-size: 1.5rem;">
+<nav class="text-center">
   <ul class="pagination justify-content-center">
 
     {% if events.has_previous %}
@@ -158,6 +120,14 @@
 </nav>
 
 {% else %}
-<p style="font-size: 1.5rem;">No results.</p>
+<div style="font-size:1.5rem;"
+class="alert alert-light alert-dismissible mb-3 p-5"
+role="alert">
+<h2>There are no results. You can see events by joining more groups here: <a href="{% url 'social-clubs' %}">Social Clubs</a></h2>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="font-size: 4rem;">
+  <span aria-hidden="true">&times;</span>
+</button>
+</div>
+
 {% endif %}
 {% endblock %}

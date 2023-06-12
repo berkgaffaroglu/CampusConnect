@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 {% block title %} Notifications {% endblock title%}
 {% block content %}
-<h1>Notifications ({{new_notification_count}}):</h1>
-{% if notifications %}
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-lg btn-outline-primary" style="font-size: 1.5rem;" name="clear">Clear Notifications</button>
-</form>
-{% endif %}
-<hr/>
-{% if notifications %}
 
+
+{% if notifications %}
+<h1>Notifications ({{notifications|length}}):</h1>
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-lg btn-light mb-5 p-3" style="font-size: 1.5rem;" name="clear">Clear Notifications</button>
+</form>
 {% for notification in notifications %}
-<div class="card mb-3" style="font-size: 1.5rem; background-color: #f3f3f3; border: 8px solid #cfcfcf; border-radius: 1%;"">
+
+<div class="card notification-card mb-3">
     <div class="card-body">
       
       {% if notification.event %} 
@@ -43,9 +42,9 @@
 
         <h3>{% if notification.url %}<a href="{{notification.url}}">{{notification.title}}</a> {% else %} {{notification.title}} {% endif %} {% if forloop.counter <= new_notification_count %}<span class="badge badge-success">New</span> {% endif %}</h3>
         <p>{{notification.description}}</p>
-        {% if notification.url %}
-            <a class="btn btn-lg btn-primary" style="font-size: 1.5rem; width: 100px;" href="{{notification.url}}">Details</a>
-        {% endif %}
+        <!-- {% if notification.url %}
+            <a class="btn btn-lg btn-primary" style="font-size: 1.5rem; width: 200px; b" href="{{notification.url}}">Details</a>
+        {% endif %} -->
     </div>
 
 </div>

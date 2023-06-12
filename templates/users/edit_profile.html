@@ -1,70 +1,48 @@
 {% extends "base.html" %}
 {% block title %}Edit Profile{% endblock title %}
 {% block content %}
-{% if user_form.errors %}
-<div class="alert alert-danger alert-dismissible" role="alert">
-    <div id="form_errors">
-        {% for key, value in user_form.errors.items %}
-        <strong>{{ value }}</strong>
-        {% endfor %}
-    </div>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endif %}
-<h1>Edit Profile</h1>
-<hr/>
-<div class="card" style="font-size: 1.5rem;">
-    
-    <div class="form-content p-5">
-        
-        
-        <img class="rounded-circle account-img mb-3" width="100px" height="100px" src="{{ user.profile.avatar.url }} "
-            style="cursor: pointer;" />
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row">
 
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <a href="{% url 'password_change' %}">Change Password</a>
-                    </div>
+<div class="login-box w-100" style="font-size: 2rem; max-width: 75%; ">
+    <div class="container">
 
-                    <div class="form-group">
-                        <label class="small mb-2">Username:</label>
-                        {{ user_form.username }}
-                    </div>
-
-                    <div class="form-group">
-                        <label class="small mb-2">First Name:</label>
-                        {{ user_form.first_name }}
-                    </div>
-                    <div class="form-group">
-                        <label class="small mb-2">Last Name:</label>
-                        {{ user_form.last_name }}
-                    </div>
-
-                    <div class="form-group">
-                        <label class="small mb-2">Email:</label>
-                        {{ user_form.email }}
-                    </div>
-
-                    <div class="form-group">
-                        <label class="small mb-2">Change Avatar:</label>
-                        {{ profile_form.avatar }}
-                    </div>
-                    <div class="form-group">
-                        <label class="small mb-2">Bio:</label> 
-                        {{ profile_form.bio }}
-                    </div>
-                </div>
+        <h1 class="mt-3"><b>Edit Profile</b></h1>
+        <br>
+        {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div id="form_errors">
+                {% for key, value in form.errors.items %}
+                    <strong>{{ value }}</strong>
+                {% endfor %}
             </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+  <form  method="POST" style="max-width: 50%; " enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    {{user_form.username}}
+    <label for="first_name" class="small mb-2">First Name:</label>
+    {{ user_form.first_name }}
+    <label for="password" class="small mb-2">Password:</label><br>
+    <a href="{% url 'password_change' %}" name="password" style="font-size: 1.5rem;">Change password</a><br>
+    <label for="last_name" class="small mb-2">Last Name:</label>
+    {{ user_form.last_name }}
+    <label for="email" class="small mb-2">Email:</label>
+    {{ user_form.email }}
+    <label for="avatar" class="small mb-2" >Change Avatar:</label>
+    {{ profile_form.avatar }}<br>
+    <label for="bio" class="small mb-2">Bio:</label> <br>
+    {{ profile_form.bio }}
+    <br>
+    <button type="submit" class="btn btn-lg btn-light ml-3 " style="font-size: 2rem; width: 100px; height: 100px;">
+        <i class="fa-solid fa-check"></i>
+      </button>
 
-            <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
-            <button type="reset" class="btn btn-dark btn-lg">Reset</button>
-        </form>
-    </div>
+  </form>
 </div>
+</div>
+
 {% endblock %}

@@ -33,6 +33,12 @@ def social_clubs(request):
 club_PER_PAGE = 2
 @login_required
 def club_detail(request, pk):
+    try:
+        if request.GET["clear_notification"]=="true":
+            request.user.profile.new_notification_count = 0
+            request.user.save()
+    except:
+        pass
     can_change = False
     club = get_object_or_404(SocialClub, pk=pk)
     images = club.social_club_images.all()
@@ -140,10 +146,19 @@ def delete_club(request, pk):
     club_title = club.name
     if request.user in club.managers.all() or request.user.is_staff:
         request.user.notifications.create(title=f'You have deleted the club {club_title}', description="You have deleted a club!")
-        if request.method == 'POST':
-            club.delete()
+        club.delete()
         messages.add_message(request, messages.constants.SUCCESS, "Club deleted!")
         return redirect('social-clubs')
     else:
         raise PermissionDenied()
 
+
+@login_required
+def my_clubs(request):
+    social_clubs_attending = SocialClub.objects.filter(members=request.user)
+    paginator = Paginator(social_clubs_attending, CLUB_PER_PAGE)
+    page = request.GET.get('page')
+    social_clubs = paginator.get_page(page)
+    
+
+    return render(request, 'social_clubs/clubs.html', {'social_clubs': social_clubs, 'PAGE_PER_PAGE':PAGE_PER_PAGE})

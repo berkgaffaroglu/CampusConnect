@@ -2,20 +2,29 @@
 {% block title %} Events {% endblock title%}
 
 {% block content %}
-<h1 style="display: inline-block;">  {% if query %}Events: <span class="text-danger">{{query}} ({{events|length}}) </span> {% elif profile %}{{title}}{% else %}Event Feed{% endif %}</h1>
+<!-- <div class="alert alert-secondary alert-dismissible p-4" role="alert">
+<h2 class="text-secondary"><b>Tip: To see more events in your feed, join new <a href="{% url 'social-clubs' %}">clubs!</a> </b> </h2>
+ <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+</div> -->
+
+{% if query %}<center><h1 style="font-size: 4rem; color: rgba(0, 0, 0, 0.692);"><b>{{query}} Events</b></h1></center>{% endif %}
+
+<!-- <form class="form-inline mb-5"  method="GET">
+  <input name="q" class="form-control form-control-lg mr-2 " style="font-size: 2rem;" type="search" placeholder="Search Events" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
+  <button class="btn btn-primary btn-lg mr-5" type="submit" style="font-size: 2rem;"><i class="fa-solid fa-magnifying-glass"></i></button>
+</form> 
+<h1 style="display: inline-block; font-size: 4rem;"> <b> {% if query %}Events: <span class="text-danger">{{query}} ({{events|length}}) </span> {% elif profile %}{{title}}{% else %}Event Feed{% endif %}</b></h1>
 <div class="float-right" style="display: inline-block;">
 
   {% if manager %}
-  <a class="btn btn-lg btn-primary button float-right" style="font-size: 1.5rem;" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i>
+  <a class="btn btn-lg btn-light button float-right p-4" style="font-size: 2rem; border-radius: 10%;" href="{% url 'create-event' %}"><i class="fa-solid fa-plus"> </i>
     Create Event</a>
   {% endif %}
-</div>
+</div> -->
 
 
-<hr />
-<form class="form-inline mb-4" style="font-size: 1.5rem;" method="GET">
-  <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Events" {% if query %}value="{{query}}"{%endif%} aria-label="Search" required>
-  <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-</form> 
+
 {% include 'events/partials/events.html' with exclude=exclude events_page=True%}
 {% endblock content %}

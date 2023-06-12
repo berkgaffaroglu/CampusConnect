@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1 style="display: inline-block;">
+<!-- <h1 style="display: inline-block;">
   {% if query %}Social Clubs: <span class="text-danger"> {{query}} ({{social_clubs|length}}) </span>{% else %}Social Clubs ({{social_clubs|length}}) {% endif %}
 </h1>
 {% if can_create_social_clubs %}
@@ -14,71 +14,57 @@
 <form class="form-inline mb-4" method="GET">
   <input name="q" class="form-control form-control-lg mr-2 " type="search" placeholder="Search Clubs" {% if query %}value="{{query}}" {%endif%} aria-label="Search" required>
   <button class="btn btn-primary btn-lg mr-5" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-</form>
+</form> -->
 
 
 
 {% if social_clubs %}
-<div class="row mb-3">
+<div class="row mb-3" >
   {% for social_club in social_clubs %}
-  <div class="col-md-6 col-lg-3 col-sm-12 mt-3 mb-3">
-    <div class="card mb-3" style="min-height: 400px; background-color: #f3f3f3; border: 8px solid #cfcfcf; border-radius: 1%;">
-      {% if request.user in social_club.managers.all %}
-      <center>
-        <h3 class="mt-3"><span class="badge badge-info p-3"><i class="fa-solid fa-check"></i> You are managing this
-            club.</span></h3>
-      </center>
-      {% else %}
-      <center>
-        {% if social_club in social_clubs_attending %}
-        <h3 class="mt-3"><span class="badge badge-success p-3"><i class="fa-solid fa-check"></i> You have joined this
-            club.</span></h3>
-        {% else %}
-        <h3 class="mt-3"><span class="badge badge-info p-3"><i class="fa-solid fa-arrow-right"></i> Available to join</span>
-        </h3>
-        {% endif %}
-      </center>
-      {% endif %}
+  <div class="col-md-6 col-lg-4 col-sm-12 mb-3" style="margin-top: 2rem; ">
+    <div class="card club-card mb-3 " >
 
-      <div class="card-body text-center">
+      <a
+      href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">
+      <img class="event-image hover-overlay ripple rounded-0" width="100%" height="300px" src="
+  {% if social_club.social_club_images.all.first %}
+    {{ social_club.social_club_images.all.first.image.url}}
+  {% else %}
+    /media/social_club_images/default.png
+  {% endif %}
+  ">
+    </a>
+      <div class="card-body p-3" >
 
+       
+        
 
-        <a
-          href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">
-          <img class="mb-3 img-fluid" style="border:2px solid black;  max-height: 200px;" src="
-      {% if social_club.social_club_images.all.first %}
-        {{ social_club.social_club_images.all.first.image.url}}
-      {% else %}
-        /media/social_club_images/default.png
-      {% endif %}
-      ">
+        <a href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}">
+          <h1 class="card-title font-weight-bold mb-2 text-left comment-edit" style="border-radius: 0 0 10px 0px; vertical-align: middle !important; position: absolute; top:0; left:0; background-color: rgba(255, 255, 255, 0.938); padding: 20px; ">{{social_club.name}}</h1>
+      
         </a>
+        <p class="p-5">
+         <span id="short_{{social_club.pk}}">{{ social_club.description|slice:70 }} {% if social_club.description|length > 70 %} <a class="click_more" onclick="toggleDescription({{social_club.pk}})">more</a>{%endif%}</span>  {% if social_club.description|length > 70 %} <span id="long_{{social_club.pk}}" style="display: none;">{{social_club.description}}</span>{% endif %}
+        </p>
+
+    
 
 
 
 
-        <a href="{% url 'club-detail' pk=social_club.pk %}?{% if request.GET.q %}q={{ request.GET.q|urlencode }}&{% endif %}{% if request.GET.club %}club={{ request.GET.club }}&{% endif %}"">
-          <h1 class=" card-title" style="font-size: 2rem;">
-          <b>{{social_club.name | title }}</b>
-          </h1>
-        </a>
-
-
-
-
-        </b>
-        <h1 class="card-title" style="font-size: 2rem;">
+        
+        <!-- <h1 class="card-title" style="font-size: 2rem;">
           {{social_club.members.all|length}} Members
         </h1>
         <a href="/events/?q={{social_club.name}}&club={{social_club.pk}}">
         <h1 class="card-title" style="font-size: 2rem;">
           {{social_club.club_events.all|length}} Events
         </h1>
-      </a>
+      </a> -->
 
 
       </div>
-      <a href="{% url 'club-detail' pk=social_club.pk %}" class="btn btn-lg btn-primary w-100">Details</a>
+      <!-- <a href="{% url 'club-detail' pk=social_club.pk %}"  class="btn club-details-button btn-lg btn-primary w-100">Details</a> -->
     </div>
   </div>
   {% endfor %}

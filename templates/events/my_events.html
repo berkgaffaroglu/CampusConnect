@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %} Events {% endblock title%}
+
+{% block content %}
+{% include 'events/partials/events.html' with exclude=exclude events_page=True dont_recommend_events=False%}
+{% endblock content %}
